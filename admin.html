@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src https://api.github.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Управление сайтом — Отечественная история</title>
+<meta name="theme-color" content="#7a1f2b">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/admin.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">И</span><span class="brand-t"><strong>Отечественная история</strong><small>Управление сайтом</small></span></a>
+    <nav class="nav simple"><ul><li><a href="index.html">← На сайт</a></li><li><a href="instrukciya.html">Инструкция</a></li></ul></nav>
+  </div>
+</header>
+
+<main id="main">
+<div class="page-head"><div class="wrap"><h1>Управление сайтом</h1></div></div>
+<div class="wrap content adm">
+
+  <!-- вход -->
+  <section id="login" class="card">
+    <h2>Вход</h2>
+    <p>Вставьте ключ доступа, который вам дали. Он действует только в этой открытой вкладке. После обновления страницы или закрытия вкладки ключ нужно ввести заново.</p>
+    <form id="login-form">
+      <label for="token">Ключ доступа</label>
+      <input id="token" type="password" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="github_pat_…" required>
+      <button class="btn" type="submit">Войти</button>
+    </form>
+    <p class="hint">Нет ключа или не получается войти? Откройте <a href="instrukciya.html">инструкцию</a>.</p>
+  </section>
+
+  <!-- рабочая область -->
+  <div id="app" hidden>
+    <p class="who"><span id="who"></span> <button id="logout" class="link" type="button">Выйти</button></p>
+
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="news">Объявления</button>
+      <button role="tab" aria-selected="false" data-tab="lec">Лекции</button>
+      <button role="tab" aria-selected="false" data-tab="pages">Страницы</button>
+    </div>
+
+    <!-- Объявления -->
+    <section id="tab-news" class="tabpane">
+      <div class="card">
+        <h2>Новое объявление</h2>
+        <form id="news-form">
+          <div class="row">
+            <div><label for="n-date">Дата</label><input id="n-date" type="date" required></div>
+          </div>
+          <label for="n-text">Текст объявления</label>
+          <textarea id="n-text" rows="3" required placeholder="Например: Размещены результаты проверки мини-эссе № 3"></textarea>
+          <label for="n-file">Прикрепить файл <span class="opt">(необязательно)</span></label>
+          <input id="n-file" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.ppt,.pptx,.png,.jpg,.jpeg,.webp,.gif,.zip">
+          <label for="n-label">Как подписать ссылку на файл <span class="opt">(необязательно)</span></label>
+          <input id="n-label" type="text" placeholder="Например: Результаты мини-эссе № 3">
+          <button class="btn" type="submit">Опубликовать</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Опубликованные объявления</h2>
+        <ul id="news-list" class="adm-list"></ul>
+      </div>
+    </section>
+
+    <!-- Лекции -->
+    <section id="tab-lec" class="tabpane" hidden>
+      <div class="card">
+        <h2>Добавить или заменить лекцию</h2>
+        <form id="lec-form">
+          <div class="row">
+            <div>
+              <label for="l-group">Курс</label>
+              <select id="l-group">
+                <option value="lekciya-">ФГУ</option>
+                <option value="mehmat-lekciya-">Мехмат</option>
+                <option value="speckurs-lekciya-">Спецкурс</option>
+              </select>
+            </div>
+            <div>
+              <label for="l-num">Номер лекции</label>
+              <input id="l-num" type="number" min="1" max="99" required>
+            </div>
+          </div>
+          <p id="l-hint" class="hint"></p>
+          <label for="l-title">Название лекции <span class="opt">(необязательно)</span></label>
+          <input id="l-title" type="text" placeholder="Например: Древняя Русь IX – нач. XIII веков">
+          <label for="l-file">Файл презентации (.pptx или .pdf)</label>
+          <input id="l-file" type="file" accept=".pptx,.ppt,.pdf" required>
+          <button class="btn" type="submit">Загрузить лекцию</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Загруженные лекции</h2>
+        <div id="lec-list"></div>
+      </div>
+    </section>
+
+    <section id="tab-pages" class="tabpane" hidden>
+      <div class="card">
+        <h2>Группа 107 и курсовые работы</h2>
+        <p>Выберите страницу и отредактируйте её прямо здесь. Можно вставить текст или таблицу из Word и Excel.</p>
+        <label for="p-page">Страница</label>
+        <select id="p-page">
+          <optgroup label="ФГУ · группа 107">
+            <option value="fgu-gruppa-107">Группа 107 · таблица занятий</option>
+            <option value="fgu-zadaniya">Задания</option>
+            <option value="fgu-rezultaty">Результаты проверки работ</option>
+            <option value="fgu-itogi-semestra">Итоги семестра</option>
+            <option value="fgu-seminary-1">Семинары первого семестра</option>
+            <option value="fgu-seminary-2">Семинары второго семестра</option>
+            <option value="fgu-rejtingovaya-sistema">Рейтинговая система</option>
+            <option value="fgu-voprosy-k-ekzamenu">Вопросы к экзамену и зачёту</option>
+            <option value="fgu-raboty-studentov">Работы студентов</option>
+          </optgroup>
+          <optgroup label="Курсовые работы">
+            <option value="kursovye-temy">Список тем</option>
+            <option value="kursovye-metodika">Методика подготовки</option>
+            <option value="kursovye-raspredelenie">Распределение тем</option>
+            <option value="kursovye-indeks">Индекс</option>
+          </optgroup>
+        </select>
+        <p><a id="p-public" href="fgu-gruppa-107.html" target="_blank" rel="noopener">Открыть опубликованную страницу ↗</a></p>
+        <form id="page-form">
+          <div id="p-toolbar" class="editor-toolbar" role="toolbar" aria-label="Оформление текста">
+            <button type="button" data-command="bold"><strong>Жирный</strong></button>
+            <button type="button" data-command="italic"><em>Курсив</em></button>
+            <button type="button" data-block="p">Абзац</button>
+            <button type="button" data-block="h2">Заголовок</button>
+            <button type="button" data-command="insertOrderedList">1. Список</button>
+            <button type="button" data-command="insertUnorderedList">• Список</button>
+            <button type="button" id="p-link">Ссылка</button>
+            <button type="button" id="p-table">Таблица</button>
+            <button type="button" id="p-row">+ Строка</button>
+            <button type="button" id="p-delete-row">Удалить строку</button>
+            <button type="button" id="p-remove-image">Удалить картинку</button>
+            <button type="button" data-command="undo">Отменить</button>
+          </div>
+          <label id="p-editor-label" for="p-editor">Содержание страницы</label>
+          <div id="p-editor" class="page-editor prose" contenteditable="false" role="textbox" aria-multiline="true" aria-labelledby="p-editor-label" spellcheck="true"></div>
+          <p id="p-state" class="hint" aria-live="polite">Выберите страницу для редактирования.</p>
+          <details class="page-upload">
+            <summary>Прикрепить документ или картинку</summary>
+            <label for="p-file">Файл до 50 МБ</label>
+            <input id="p-file" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.ppt,.pptx,.png,.jpg,.jpeg,.webp,.gif,.zip">
+            <label for="p-file-label">Подпись к файлу или картинке</label>
+            <input id="p-file-label" type="text" placeholder="Например: Задания на октябрь">
+            <button id="p-upload" class="del" type="button">Добавить в страницу</button>
+            <p class="hint">После добавления файла нажмите «Сохранить страницу».</p>
+          </details>
+          <div class="editor-actions">
+            <button id="p-save" class="btn" type="submit" disabled>Сохранить страницу</button>
+            <button id="p-preview-button" class="del" type="button">Предпросмотр</button>
+            <button id="p-reload" class="link" type="button">Загрузить заново</button>
+          </div>
+        </form>
+      </div>
+      <section id="p-preview" class="card" hidden>
+        <h2>Предпросмотр</h2>
+        <div id="p-preview-content" class="prose edited-page"></div>
+      </section>
+    </section>
+  </div>
+
+  <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+</div>
+</main>
+
+<footer class="foot"><div class="wrap foot-in"><p>Публикация изменений обычно занимает 1–5 минут.<br>Вопросы по работе сайта: <a href="https://t.me/qddwxd" target="_blank" rel="noopener">@qddwxd</a></p></div></footer>
+<script type="module" src="assets/admin.js"></script>
+</body>
+</html>
