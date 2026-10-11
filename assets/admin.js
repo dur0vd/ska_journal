@@ -1,5 +1,6 @@
 import PageContent from './page-content.js';
 import { safeAttachmentName } from './content-policy.js';
+import { initJournalAdmin } from './journal-admin.js';
 
 (function () {
   'use strict';
@@ -113,6 +114,8 @@ import { safeAttachmentName } from './content-policy.js';
     return putFile(path, toBase64Utf8(JSON.stringify(data, null, 2) + '\n'), message, sha);
   }
 
+  var journalAdmin = null;
+
   // ---------- вход ----------
   function showApp(login) {
     $('login').hidden = true;
@@ -120,6 +123,7 @@ import { safeAttachmentName } from './content-policy.js';
     $('who').textContent = 'Вы вошли' + (login ? ' (' + login + ')' : '');
     loadNews();
     loadLectures();
+    if (!journalAdmin) journalAdmin = initJournalAdmin({ gh: gh, readJson: readJson, writeJson: writeJson, delFile: delFile, status: status, busy: busy });
   }
   function checkToken() {
     return fetch('https://api.github.com/repos/' + OWNER + '/' + REPO, {
@@ -153,6 +157,7 @@ import { safeAttachmentName } from './content-policy.js';
   $('logout').addEventListener('click', function () {
     try { localStorage.removeItem(KEY); } catch (e) {}
     token = '';
+    if (journalAdmin) journalAdmin.reset();
     $('app').hidden = true;
     $('login').hidden = false;
     $('token').value = '';
@@ -169,6 +174,7 @@ import { safeAttachmentName } from './content-policy.js';
         pane.hidden = pane.id !== 'tab-' + b.dataset.tab;
       });
       if (b.dataset.tab === 'pages' && !pageLoaded) loadPage();
+      if (b.dataset.tab === 'journal' && journalAdmin) journalAdmin.open();
     });
   });
 

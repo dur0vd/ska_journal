@@ -64,3 +64,25 @@
 .editor-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 20px; }
 .adm .editor-actions .btn { margin-top: 0; }
 .edited-page img { max-width: 100%; height: auto; max-height: 75vh; }
+
+/* журнал баллов: редактор */
+.j-actions { margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
+.j-new { margin-top: 16px; padding-top: 4px; border-top: 1px solid var(--line); }
+.j-scroll { overflow: auto; max-height: 70vh; border: 1px solid var(--line); border-radius: 10px; margin-top: 14px; }
+.j-edit { border-collapse: separate; border-spacing: 0; font-size: 14.5px; min-width: 100%; }
+.j-edit th, .j-edit td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; background: var(--surface); }
+.j-edit thead th { position: sticky; top: 0; z-index: 2; background: var(--accent-soft); text-align: left; vertical-align: bottom; }
+.j-edit .j-col { min-width: 150px; }
+.j-edit .j-col input[type=text] { width: 100%; margin-bottom: 4px; }
+.j-edit .j-max { display: flex; align-items: center; gap: 6px; font-weight: 400; margin: 4px 0; }
+.j-edit .j-max input { width: 80px; }
+.j-edit td input[type=text] { width: 190px; }
+.j-edit td input[type=number] { width: 84px; }
+.j-edit input { font: inherit; padding: 7px 9px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+.j-edit input:focus { outline: 3px solid var(--gold); outline-offset: 1px; border-color: var(--accent); }
+.j-edit input.over { border-color: #b3261e; background: color-mix(in srgb, #b3261e 12%, var(--bg)); }
+.j-edit .j-code-cell { font: 600 15px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; padding-top: 14px; }
+.j-edit .j-sum { font-weight: 700; padding-top: 14px; text-align: center; }
+.del.small { font-size: 13px; padding: 5px 9px; margin-top: 4px; }
+
+.row > .j-actions { align-self: flex-end; margin-top: 0; }

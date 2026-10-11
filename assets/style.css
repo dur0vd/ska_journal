@@ -204,3 +204,28 @@ a:hover { text-decoration-thickness: 2px; }
 
 .contact.tech { margin-top: 20px; }
 .foot a { color: inherit; }
+
+/* журнал баллов */
+.journal { margin: 0 0 56px; }
+.journal h2 { font: 600 26px/1.25 var(--serif); margin: 0 0 14px; }
+.j-find label { display: block; font-weight: 600; margin: 12px 0 6px; }
+.j-code { font: 600 20px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase; width: min(100%, 260px); padding: 12px 14px; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px; }
+.j-code:focus { outline: 3px solid var(--gold); outline-offset: 1px; border-color: var(--accent); }
+.j-result { margin: 14px 0; padding: 14px 18px; font-weight: 600; border-left: 4px solid var(--accent); }
+.journal .hint { color: var(--muted); font-size: 14.5px; margin: 10px 0; }
+.j-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); margin-top: 14px; }
+.j-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
+.j-table th, .j-table td { padding: 9px 12px; text-align: center; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.j-table thead th { background: var(--accent-soft); font-weight: 600; vertical-align: bottom; }
+.j-table thead th small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+.j-table .j-group { border-bottom: 1px solid var(--line); }
+.j-table tbody tr:last-child th, .j-table tbody tr:last-child td { border-bottom: 0; }
+.j-table .j-code-h { position: sticky; left: 0; z-index: 1; background: var(--surface); text-align: left; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .08em; border-right: 1px solid var(--line); }
+.j-table thead .j-code-h { background: var(--accent-soft); }
+.j-table .j-total { font-weight: 700; }
+.j-table .j-empty { color: var(--muted); }
+.j-pass { color: #2e7d32; font-weight: 700; }
+.j-fail { color: var(--muted); }
+@media (prefers-color-scheme: dark) { .j-pass { color: #7bc67e; } }
+.j-table tbody tr:hover th, .j-table tbody tr:hover td { background: var(--accent-soft); }
+.j-table tr.mine th, .j-table tr.mine td { background: var(--accent-soft); box-shadow: inset 0 2px 0 var(--accent), inset 0 -2px 0 var(--accent); }

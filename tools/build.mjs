@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 import * as cheerio from 'cheerio';
 import { sanitizePage } from './page-content.mjs';
+import { renderJournal } from '../assets/journal-core.js';
 
 const OUT = ROOT;
 // Версия браузерной очистки из lockfile, без стороннего CDN.
@@ -26,6 +27,7 @@ const NAV = [
     ['/lekcii', 'lekcii', 'Лекции'],
     ['/sajty-po-istorii-rossii', 'sajty', 'Сайты по истории России'],
     ['/obyavleniya', 'obyavleniya', 'Объявления'],
+    ['/__journal', 'zhurnal', 'Рейтинг и баллы'],
   ]},
   { title: 'Спецкурс', items: [
     ['/спецкурс', 'speckurs', 'О спецкурсе'],
@@ -227,7 +229,7 @@ function navHtml(currentSlug) {
   return h + '</ul></nav>';
 }
 
-function layout({ slug, title, body, crumb, desc, pager }) {
+function layout({ slug, title, body, crumb, desc, pager, scripts = "" }) {
   const t = slug === 'index' ? `${SITE} — сайт ${AUTHOR_GEN}` : `${title} — ${SITE}`;
   return `<!doctype html>
 <html lang="ru">
@@ -264,12 +266,22 @@ ${pager || ''}
     <p><a href="kontakty.html">Связаться</a><br>Вопросы по работе сайта: <a href="https://t.me/qddwxd" target="_blank" rel="noopener">@qddwxd</a></p>
   </div>
 </footer>
-<script src="assets/app.js"></script>
+<script src="assets/app.js"></script>${scripts}
 </body>
 </html>`;
 }
 
 // ---- build pages ------------------------------------------------------------
+// журналы баллов: data/journals/<имя>.json
+function renderJournalsPage() {
+  const dir = ROOT + '/data/journals';
+  const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => /^[a-z0-9-]+\.json$/.test(f)).sort() : [];
+  let html = '<p class="lead">Найдите себя по личному коду, который выдал преподаватель. Фамилии на сайте не публикуются.</p>\n';
+  if (!files.length) return html + '<p class="hint">Журналы пока не опубликованы.</p>';
+  for (const f of files) html += renderJournal(f.replace(/\.json$/, ''), JSON.parse(fs.readFileSync(dir + '/' + f, 'utf8'))) + '\n';
+  return html;
+}
+
 const built = new Set();
 const results = [];
 function pageBody(p) {
@@ -279,6 +291,7 @@ function pageBody(p) {
     const content = sanitizePage(data.html);
     return '<div class="prose edited-page">' + (content.trim() || '<p>Материалы ещё не размещены.</p>') + '</div>';
   }
+  if (p === '/__journal') return renderJournalsPage();
   const pg = pages[p];
   if (!pg) return '';
   if (p === '/lekcii') return renderLectures();
@@ -299,7 +312,7 @@ for (const [idx, it] of flat.entries()) {
   const i = sectionItems.indexOf(it);
   const prev = sectionItems[i - 1], next = sectionItems[i + 1];
   const pager = (prev || next) ? `<nav class="pager" aria-label="Соседние страницы">${prev ? `<a class="prev" href="${prev.slug}.html"><small>Назад</small>${prev.title}</a>` : '<span></span>'}${next ? `<a class="next" href="${next.slug}.html"><small>Далее</small>${next.title}</a>` : '<span></span>'}</nav>` : '';
-  fs.writeFileSync(`${OUT}/${it.slug}.html`, layout({ slug: it.slug, title: it.title, body: bodies[it.p], crumb: `<a href="index.html">Главная</a> / ${it.section}`, pager }));
+  fs.writeFileSync(`${OUT}/${it.slug}.html`, layout({ slug: it.slug, title: it.title, body: bodies[it.p], scripts: it.slug === 'zhurnal' ? '\n<script src="assets/journal.js"></script>' : '', crumb: `<a href="index.html">Главная</a> / ${it.section}`, pager }));
   results.push(it.slug);
 }
 
@@ -340,6 +353,7 @@ for (const [idx, it] of flat.entries()) {
   ${tile('mehmat-temy-seminarov.html', 'Мехмат', 'Семинары, эссе, экзамен', '04')}
   ${tile('speckurs.html', 'Спецкурс', 'Революция и реакция в русской истории', '05')}
   ${tile('kursovye-temy.html', 'Курсовые работы', 'Темы, методика, индекс', '06')}
+  ${tile('zhurnal.html', 'Рейтинг и баллы', 'Свои баллы по личному коду', '07')}
 </section>
 <div class="two">
   <section class="prose card"><h2>О сайте</h2>${cleanRich(intro.h).replace(/«методические материалы»|"методические материалы"/, '«<a href="metodicheskie-materialy.html">методические материалы</a>»').replace(/"Лекции"/, '«<a href="lekcii.html">Лекции</a>»').replace(/"объявления"/, '«<a href="obyavleniya.html">объявления</a>»')}</section>
