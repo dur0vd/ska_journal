@@ -70,7 +70,7 @@ npm test        # проверки HTML, вложений и локальног�
 | Сцена и камера | `assets/scene/src/main.js` (собирается в `assets/scene/world3d.js`) |
 | Разделы и снимки | `SECTION_SCENE`, `HOME_SCENES` в `tools/build.mjs` |
 
-**Вернуть старый дизайн:** `SITE_DESIGN=classic npm run build` — страницы получаются точно такими же, как раньше.
+**Вернуть старый дизайн:** `SITE_DESIGN=classic npm run build` — прежнее оформление (содержание страниц — текущее).
 Для сайта на GitHub: Settings → Secrets and variables → Actions → Variables → `SITE_DESIGN` = `classic`.
 Чтобы вернуть новый, удалите переменную. Последний коммит до нового дизайна: `b77792c`.
 

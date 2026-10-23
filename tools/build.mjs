@@ -73,7 +73,7 @@ const NAV = [
   ]},
   { title: 'ФГУ', items: [
     ['/rejtingovaya-sistema', 'fgu-rejtingovaya-sistema', 'Рейтинговая система'],
-    ['/spiski-grupp', 'fgu-gruppa-107', 'Группа 107'],
+    // ['/spiski-grupp', 'fgu-gruppa-107', 'Группа 107'], — скрыта: состав группы сменился, вернуть — раскомментировать
     ['/zadaniya', 'fgu-zadaniya', 'Задания'],
     ['/seminary-pervogo-semestra', 'fgu-seminary-1', 'Семинары первого семестра'],
     ['/seminary-vtorogo', 'fgu-seminary-2', 'Семинары второго семестра'],
@@ -414,7 +414,7 @@ function sceneHome(intro, news) {
     slide('basil', 'Курс «История»', `Программа курса, ${lectureCount() ? lectureCount() + ' презентаций лекций' : 'презентации лекций'} и методические материалы.`,
       links([['programma.html', 'Программа'], ['lekcii.html', 'Лекции'], ['metodicheskie-materialy.html', 'Методические материалы'], ['sajty.html', 'Сайты по истории России']])),
     slide('peterhof', 'ФГУ', 'Рейтинговая система, задания, семинары, результаты проверки и итоги семестра.',
-      links([['fgu-rejtingovaya-sistema.html', 'Рейтинговая система'], ['fgu-gruppa-107.html', 'Группа 107'], ['fgu-zadaniya.html', 'Задания'], ['fgu-rezultaty.html', 'Результаты'], ['fgu-voprosy-k-ekzamenu.html', 'Вопросы к экзамену']])),
+      links([['fgu-rejtingovaya-sistema.html', 'Рейтинговая система'], ['fgu-zadaniya.html', 'Задания'], ['fgu-rezultaty.html', 'Результаты'], ['fgu-voprosy-k-ekzamenu.html', 'Вопросы к экзамену']])),
     slide('top', 'О сайте', '',
       `<div class="prose">${cleanRich(intro.h)}</div>${links([['kontakty.html', 'Контакты'], ['zhurnal-ballov.html', 'Журнал баллов']])}`),
   ];
