@@ -20,9 +20,15 @@ const ease = (t) => t * t * (3 - 2 * t);
 const darkMQ = matchMedia('(prefers-color-scheme: dark)');
 const isNight = () => (root.dataset.theme || (darkMQ.matches ? 'dark' : 'light')) === 'dark';
 
-function fallback() {
-  // Без WebGL — прежний фон из фотографий
+let fellBack = false;
+function fallback(why) {
+  // Без WebGL или если 3D не собралось — фон из фотографий
+  if (fellBack || root.classList.contains('scene-3d')) return;
+  fellBack = true;
+  if (why) console.warn('3D-фон недоступен:', why);
+  document.querySelector('.scene-gl')?.remove();
   root.classList.add('scene-fallback');
+  done();
   const p = './scene.js';
   import(p);
 }
@@ -61,14 +67,15 @@ const Painterly = {
     }`,
 };
 
-function start() {
+async function start() {
   const canvas = document.createElement('canvas');
   canvas.className = 'scene-gl';
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
     if (!renderer.capabilities.isWebGL2) throw new Error('WebGL2');
-  } catch (e) { fallback(); return; }
+  } catch (e) { fallback(e); return; }
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); location.reload(); });
   const coarse = matchMedia('(pointer: coarse)').matches;
   const quality = innerWidth >= 900 && !coarse ? 2 : 1;
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, quality > 1 ? 1.25 : 1));
@@ -80,7 +87,8 @@ function start() {
 
   const outside = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.5, 9000);
-  const W = buildWorld(renderer, outside, quality);
+  const W = await buildWorld(renderer, outside, quality);
+  if (fellBack) return;
   const P = W.P;
   const inside = new THREE.Scene();
   let room = null;
@@ -180,25 +188,28 @@ function start() {
     const shot = SHOTS[key] || SHOTS.overview;
     const door = P[key] ? P[key].door : shot.look;
     const near = { pos: door.clone().lerp(shot.pos, 0.04), look: door.clone(), key };
-    let skip = reduced;
+    let skip = reduced || performance.now() > 3500; // долго грузились — сразу внутрь, текст уже показан
     try { skip = skip || sessionStorage.getItem('scene-section') === key; sessionStorage.setItem('scene-section', key); } catch (e) {}
     let entered = false, t0 = 0;
+    let entering = false;
     const enter = () => {
-      entered = true;
+      if (entering) return;
+      entering = true;
       room = room || buildInterior(inside, body.dataset.sceneInterior, body.dataset.sceneAccent || '#8c2b24');
-      active = inside; renderPass.scene = inside;
+      renderer.compileAsync(inside, camera).catch(() => {}).then(() => { entered = true; active = inside; renderPass.scene = inside; });
       bloom.strength = 0.5; bloom.threshold = 0.75;
       done();
     };
     if (skip) enter();
     update = (dt, time) => {
       if (!entered) {
+        if (skip) { place(near, near, 1); return; } // ждём компиляцию помещения
         if (!t0) t0 = performance.now();
         const t = clamp((performance.now() - t0) / 2300, 0, 1);
         place(shot, near, t * t);
         if (flash) flash.style.opacity = String(Math.max(0, (t - 0.78) / 0.22));
         if (t >= 1) enter();
-        return;
+        if (!entered) return;
       }
       if (flash && +flash.style.opacity > 0) flash.style.opacity = String(Math.max(0, +flash.style.opacity - dt * 1.6));
       const o = room.orbit;
@@ -226,6 +237,7 @@ function start() {
 
   let last = performance.now(), first = true;
   function loop(now) {
+    if (fellBack) { renderer.dispose(); return; }
     requestAnimationFrame(loop);
     if (document.hidden) { last = now; return; }
     const dt = Math.min(0.1, (now - last) / 1000); last = now;
@@ -242,7 +254,13 @@ function start() {
     composer.render(dt);
     if (first) { first = false; root.classList.add('scene-3d'); }
   }
+  update(0, 0);
+  await renderer.compileAsync(outside, camera).catch(() => {});
+  if (fellBack) return;
   requestAnimationFrame(loop);
 }
 
-try { start(); } catch (e) { console.error(e); fallback(); }
+// Если за 15 секунд сцена не показалась (слабое устройство), остаются фотографии.
+setTimeout(() => fallback('долгая загрузка'), 15000);
+addEventListener('error', (e) => { if (!root.classList.contains('scene-3d')) fallback(e.message); });
+start().catch((e) => fallback(e));

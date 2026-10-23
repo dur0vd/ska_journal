@@ -140,8 +140,9 @@ function nightSky() {
   }));
 }
 
-export function buildWorld(renderer, scene, quality) {
-  const M = makeMaterials();
+const pause = () => new Promise((r) => setTimeout(r, 0));
+export async function buildWorld(renderer, scene, quality) {
+  const M = await makeMaterials(quality);
   const env = new THREE.PMREMGenerator(renderer);
   // день: небо с рассеянием света
   const sky = new Sky(); sky.scale.setScalar(4500);
@@ -161,12 +162,14 @@ export function buildWorld(renderer, scene, quality) {
   const hemi = new THREE.HemisphereLight('#bcd2ff', '#5a4a30', 0.9);
   const sun = new THREE.DirectionalLight('#ffd9a8', 3.2);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(quality > 1 ? 4096 : 2048, quality > 1 ? 4096 : 2048);
+  sun.shadow.mapSize.set(quality > 1 ? 4096 : 1024, quality > 1 ? 4096 : 1024);
   Object.assign(sun.shadow.camera, { left: -180, right: 180, top: 180, bottom: -180, near: 10, far: 1600 });
   sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.6;
   scene.add(hemi, sun, sun.target);
 
+  await pause();
   scene.add(terrain(M, quality));
+  await pause();
   // площадь между Кремлём и Покровским собором
   const sq = new THREE.Mesh(new THREE.PlaneGeometry(150, 190), M.cobble); sq.rotation.x = -Math.PI / 2; sq.position.set(42, 1.25, 30); sq.receiveShadow = true;
   scene.add(sq);
@@ -182,13 +185,14 @@ export function buildWorld(renderer, scene, quality) {
     const [az, dist, ch, ly] = SITES[key].view;
     const cx = x + Math.sin(az) * dist, cz = z + Math.cos(az) * dist;
     P[key].shot = { pos: new THREE.Vector3(cx, Math.max(heightAt(cx, cz), 0) + ch, cz), look: new THREE.Vector3(x, ly, z) };
+    return pause();
   };
-  place('spasskaya', spasskaya);
-  place('basil', basil, 0.4);
-  place('mokhovaya', mokhovaya, 0.2);
-  place('sophia', sophia, 0.5);
-  place('nerl', nerl, Math.PI);
-  place('kizhi', kizhi, 0.3);
+  await place('spasskaya', spasskaya);
+  await place('basil', basil, 0.4);
+  await place('mokhovaya', mokhovaya, 0.2);
+  await place('sophia', sophia, 0.5);
+  await place('nerl', nerl, Math.PI);
+  await place('kizhi', kizhi, 0.3);
   world.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   scene.add(forest(quality, Object.values(P).flatMap((b) => [[b.shot.pos.x, b.shot.pos.z], [(b.shot.pos.x + b.center.x) / 2, (b.shot.pos.z + b.center.z) / 2]])));
 
@@ -211,7 +215,7 @@ export function buildWorld(renderer, scene, quality) {
       M.window.emissiveIntensity = on ? 1.6 : 0;
       M.clock.emissiveIntensity = on ? 0.9 : 0;
       M.ruby.emissiveIntensity = on ? 3 : 0.4;
-      for (const f of floods) f.intensity = 0;
+      for (const f of floods) { f.intensity = 0; f.visible = on; } // днём прожекторов нет — шейдеры проще
       this.night = on;
     },
     // Следим за точкой, куда смотрит камера: тени и прожекторы рядом с ней.
