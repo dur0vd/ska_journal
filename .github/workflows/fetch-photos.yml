@@ -21,6 +21,8 @@ jobs:
         with:
           node-version: 22
       - run: node tools/fetch-photos.mjs ${{ hashFiles('img/scene/choice.json') != '' && 'final' || 'candidates' }}
+      - name: Сжать снимки для сайта
+        run: mogrify -resize '1920x1920>' -quality 80 -interlace Plane -strip img/scene/*.jpg
       - name: Сохранить в ветку
         run: |
           git config user.name "github-actions[bot]"

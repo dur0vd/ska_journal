@@ -14,7 +14,7 @@
 <script src="assets/scene/boot.js"></script>
 </head>
 <body data-scene="home">
-<canvas id="world" aria-hidden="true"></canvas><div class="scene-grade" aria-hidden="true"></div><div class="scene-flash" aria-hidden="true"></div>
+<div class="scenes" aria-hidden="true"><div class="scene"><img src="img/scene/square.jpg" alt="" decoding="async"></div><div class="scene"><img src="img/scene/spasskaya.jpg" alt="" loading="lazy" decoding="async"></div><div class="scene"><img src="img/scene/ivan.jpg" alt="" loading="lazy" decoding="async"></div><div class="scene"><img src="img/scene/basil.jpg" alt="" loading="lazy" decoding="async"></div><div class="scene"><img src="img/scene/msu.jpg" alt="" loading="lazy" decoding="async"></div><div class="scene"><img src="img/scene/museum.jpg" alt="" loading="lazy" decoding="async"></div><div class="scene"><img src="img/scene/gum.jpg" alt="" loading="lazy" decoding="async"></div><div class="scene"><img src="img/scene/kremlin.jpg" alt="" loading="lazy" decoding="async"></div></div><div class="scene-grade" aria-hidden="true"></div><div class="scene-flash" aria-hidden="true"></div><canvas id="snow" aria-hidden="true"></canvas>
 <a class="skip" href="#main">К содержанию</a>
 <header class="top">
   <div class="top-in">
@@ -26,45 +26,38 @@
 <main id="main">
 
 <div class="wrap content">
-<div class="slides"><section class="slide cover" id="s-start" data-shot="overview">
+<div class="slides"><section class="slide cover" id="s-start" data-shot="square">
   <div class="slide-in"><p class="kicker rise">МГУ имени М. В. Ломоносова</p><h1 class="rise">Отечественная история</h1>
-  <p class="slide-text rise">Сайт для студентов, изучающих отечественную историю: программа курса, лекции, семинары, задания и результаты. Прокрутите вниз — путь по Красной площади идёт через века.</p>
+  <p class="slide-text rise">Сайт для студентов, изучающих отечественную историю: программа курса, лекции, семинары, задания и результаты.</p>
   <p class="hero-cta rise"><a class="btn" href="lekcii.html">Презентации лекций</a><a class="btn ghost" href="zhurnal-ballov.html">Журнал баллов</a></p>
   <p class="scroll-hint rise" aria-hidden="true"><i></i>Листайте</p></div>
 </section>
-<section class="slide" id="s-1491" data-shot="spasskaya" data-year="1491">
-  <div class="slide-in"><p class="big-year rise" aria-hidden="true">1491</p><p class="kicker rise">Спасская башня Кремля</p>
-  <h2 class="rise">ФГУ</h2><p class="slide-text rise">Рейтинговая система, задания, семинары, результаты проверки и итоги семестра.</p><div class="rise"><p class="chips"><a class="chip" href="fgu-rejtingovaya-sistema.html">Рейтинговая система</a><a class="chip" href="fgu-gruppa-107.html">Группа 107</a><a class="chip" href="fgu-zadaniya.html">Задания</a><a class="chip" href="fgu-rezultaty.html">Результаты</a><a class="chip" href="fgu-voprosy-k-ekzamenu.html">Вопросы к экзамену</a></p></div></div>
+<section class="slide" id="s-spasskaya" data-shot="spasskaya">
+  <div class="slide-in"><h2 class="rise">ФГУ</h2><p class="slide-text rise">Рейтинговая система, задания, семинары, результаты проверки и итоги семестра.</p><div class="rise"><p class="chips"><a class="chip" href="fgu-rejtingovaya-sistema.html">Рейтинговая система</a><a class="chip" href="fgu-gruppa-107.html">Группа 107</a><a class="chip" href="fgu-zadaniya.html">Задания</a><a class="chip" href="fgu-rezultaty.html">Результаты</a><a class="chip" href="fgu-voprosy-k-ekzamenu.html">Вопросы к экзамену</a></p></div></div>
 </section>
-<section class="slide" id="s-1508" data-shot="ivan" data-year="1508">
-  <div class="slide-in"><p class="big-year rise" aria-hidden="true">1508</p><p class="kicker rise">Колокольня Ивана Великого</p>
-  <h2 class="rise">Курсовые работы</h2><p class="slide-text rise">Темы, методика подготовки, распределение тем и индекс.</p><div class="rise"><p class="chips"><a class="chip" href="kursovye-temy.html">Тематика</a><a class="chip" href="kursovye-metodika.html">Методика</a><a class="chip" href="kursovye-raspredelenie.html">Распределение тем</a><a class="chip" href="kursovye-indeks.html">Индекс</a></p></div></div>
+<section class="slide" id="s-ivan" data-shot="ivan">
+  <div class="slide-in"><h2 class="rise">Курсовые работы</h2><p class="slide-text rise">Темы, методика подготовки, распределение тем и индекс.</p><div class="rise"><p class="chips"><a class="chip" href="kursovye-temy.html">Тематика</a><a class="chip" href="kursovye-metodika.html">Методика</a><a class="chip" href="kursovye-raspredelenie.html">Распределение тем</a><a class="chip" href="kursovye-indeks.html">Индекс</a></p></div></div>
 </section>
-<section class="slide" id="s-1561" data-shot="basil" data-year="1561">
-  <div class="slide-in"><p class="big-year rise" aria-hidden="true">1561</p><p class="kicker rise">Покровский собор на Рву</p>
-  <h2 class="rise">Курс «История»</h2><p class="slide-text rise">Программа курса, презентации лекций и методические материалы.</p><div class="rise"><p class="chips"><a class="chip" href="programma.html">Программа</a><a class="chip" href="lekcii.html">Лекции</a><a class="chip" href="metodicheskie-materialy.html">Методические материалы</a><a class="chip" href="sajty.html">Сайты по истории России</a></p></div></div>
+<section class="slide" id="s-basil" data-shot="basil">
+  <div class="slide-in"><h2 class="rise">Курс «История»</h2><p class="slide-text rise">Программа курса, презентации лекций и методические материалы.</p><div class="rise"><p class="chips"><a class="chip" href="programma.html">Программа</a><a class="chip" href="lekcii.html">Лекции</a><a class="chip" href="metodicheskie-materialy.html">Методические материалы</a><a class="chip" href="sajty.html">Сайты по истории России</a></p></div></div>
 </section>
-<section class="slide" id="s-1755" data-shot="msu" data-year="1755">
-  <div class="slide-in"><p class="big-year rise" aria-hidden="true">1755</p><p class="kicker rise">Московский университет</p>
-  <h2 class="rise">Мехмат</h2><p class="slide-text rise">Тематика семинаров, литература, эссе, рейтинг и вопросы к экзамену.</p><div class="rise"><p class="chips"><a class="chip" href="mehmat-temy-seminarov.html">Семинары</a><a class="chip" href="mehmat-literatura.html">Литература</a><a class="chip" href="mehmat-zadaniya.html">Задания</a><a class="chip" href="mehmat-rejting.html">Рейтинг</a><a class="chip" href="mehmat-voprosy-k-ekzamenu.html">Вопросы к экзамену</a></p></div></div>
+<section class="slide" id="s-msu" data-shot="msu">
+  <div class="slide-in"><h2 class="rise">Мехмат</h2><p class="slide-text rise">Тематика семинаров, литература, эссе, рейтинг и вопросы к экзамену.</p><div class="rise"><p class="chips"><a class="chip" href="mehmat-temy-seminarov.html">Семинары</a><a class="chip" href="mehmat-literatura.html">Литература</a><a class="chip" href="mehmat-zadaniya.html">Задания</a><a class="chip" href="mehmat-rejting.html">Рейтинг</a><a class="chip" href="mehmat-voprosy-k-ekzamenu.html">Вопросы к экзамену</a></p></div></div>
 </section>
-<section class="slide" id="s-1872" data-shot="museum" data-year="1872">
-  <div class="slide-in"><p class="big-year rise" aria-hidden="true">1872</p><p class="kicker rise">Исторический музей</p>
-  <h2 class="rise">Спецкурс</h2><p class="slide-text rise">«От Просвещения к постмодерну: революция и реакция в русской истории».</p><div class="rise"><p class="chips"><a class="chip" href="speckurs.html">О спецкурсе</a><a class="chip" href="speckurs-lekcii.html">Презентации лекций</a><a class="chip" href="speckurs-seminary.html">Семинары</a><a class="chip" href="speckurs-debaty.html">Дебаты</a></p></div></div>
+<section class="slide" id="s-museum" data-shot="museum">
+  <div class="slide-in"><h2 class="rise">Спецкурс</h2><p class="slide-text rise">«От Просвещения к постмодерну: революция и реакция в русской истории».</p><div class="rise"><p class="chips"><a class="chip" href="speckurs.html">О спецкурсе</a><a class="chip" href="speckurs-lekcii.html">Презентации лекций</a><a class="chip" href="speckurs-seminary.html">Семинары</a><a class="chip" href="speckurs-debaty.html">Дебаты</a></p></div></div>
 </section>
-<section class="slide" id="s-1893" data-shot="gum" data-year="1893">
-  <div class="slide-in"><p class="big-year rise" aria-hidden="true">1893</p><p class="kicker rise">Верхние торговые ряды</p>
-  <h2 class="rise">Журнал баллов и объявления</h2><div class="rise"><ul class="news"><li><time>15.05.2024</time><span>На сайте размещены <a href="fgu-itogi-semestra.html">предварительные итоги</a> семестра</span></li><li><time>15.12.2023</time><span>На сайте размещены <a href="fgu-itogi-semestra.html">предварительные итоги</a> семестра</span></li><li><time>07.12.2023</time><span>На сайте размещены <a href="fgu-rezultaty.html">итоги проверки </a>мини-эссе № 2 гр. 107 ФГУ</span></li></ul><p class="chips"><a class="chip" href="zhurnal-ballov.html">Журнал баллов</a><a class="chip" href="obyavleniya.html">Все объявления</a></p></div></div>
+<section class="slide" id="s-gum" data-shot="gum">
+  <div class="slide-in"><h2 class="rise">Журнал баллов и объявления</h2><div class="rise"><ul class="news"><li><time>15.05.2024</time><span>На сайте размещены <a href="fgu-itogi-semestra.html">предварительные итоги</a> семестра</span></li><li><time>15.12.2023</time><span>На сайте размещены <a href="fgu-itogi-semestra.html">предварительные итоги</a> семестра</span></li><li><time>07.12.2023</time><span>На сайте размещены <a href="fgu-rezultaty.html">итоги проверки </a>мини-эссе № 2 гр. 107 ФГУ</span></li></ul><p class="chips"><a class="chip" href="zhurnal-ballov.html">Журнал баллов</a><a class="chip" href="obyavleniya.html">Все объявления</a></p></div></div>
 </section>
-<section class="slide" id="s-top" data-shot="top" data-year="">
-  <div class="slide-in"><p class="kicker rise">Красная площадь</p>
-  <h2 class="rise">О сайте</h2><div class="rise"><div class="prose"><p>Сайт предназначен для студентов МГУ имени М. В. Ломоносова, изучающих предмет "Отечественная история".</p>
+<section class="slide" id="s-kremlin" data-shot="kremlin">
+  <div class="slide-in"><h2 class="rise">О сайте</h2><div class="rise"><div class="prose"><p>Сайт предназначен для студентов МГУ имени М. В. Ломоносова, изучающих предмет "Отечественная история".</p>
 <p>Для того, чтобы ознакомится с программой курса, перечнем лекций и семинаров, перейдите в раздел "методические материалы".</p>
 <p>Для того, чтобы увидеть о занятиях в вашей группе, перейдите на страницу с названием вашего факультета. Там же будут размещены результаты проверки письменных работ и общее количество рейтинговых баллов по итогам семсетра.</p>
 <p>Презентации лекций по истории России - на странице "Лекции"</p>
 <p>Все новости - на странице "объявления".</p></div><p class="chips"><a class="chip" href="kontakty.html">Контакты</a><a class="chip" href="zhurnal-ballov.html">Журнал баллов</a></p></div></div>
 </section></div>
-<nav class="era-line" aria-label="Эпохи"><a href="#s-start">Начало</a><a href="#s-1491">1491</a><a href="#s-1508">1508</a><a href="#s-1561">1561</a><a href="#s-1755">1755</a><a href="#s-1872">1872</a><a href="#s-1893">1893</a></nav>
+<nav class="era-line" aria-label="Разделы"><a href="#s-start">Начало</a><a href="#s-spasskaya">ФГУ</a><a href="#s-ivan">Курсовые</a><a href="#s-basil">Курс</a><a href="#s-msu">Мехмат</a><a href="#s-museum">Спецкурс</a><a href="#s-gum">Журнал</a><a href="#s-kremlin">О сайте</a></nav>
 
 </div>
 </main>
