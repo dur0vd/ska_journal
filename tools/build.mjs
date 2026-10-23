@@ -10,26 +10,28 @@ const OUT = ROOT;
 // Версия браузерной очистки из lockfile, без стороннего CDN.
 fs.mkdirSync(path.join(ROOT, 'assets/vendor'), { recursive: true });
 fs.copyFileSync(path.join(ROOT, 'node_modules/dompurify/dist/purify.es.mjs'), path.join(ROOT, 'assets/vendor/purify.es.mjs'));
-// Дизайн сайта: scene — 3D-Москва (assets/scene), classic — прежний светлый.
+// Дизайн сайта: scene — фотографии Москвы с «пролётом» (assets/scene, img/scene), classic — прежний светлый.
 // Вернуть старый дизайн: SITE_DESIGN=classic npm run build (в GitHub — переменная репозитория SITE_DESIGN).
 const DESIGN = process.env.SITE_DESIGN || 'scene';
 if (!['scene', 'classic'].includes(DESIGN)) throw new Error('SITE_DESIGN: scene или classic');
 if (DESIGN === 'scene') {
-  fs.copyFileSync(path.join(ROOT, 'node_modules/three/build/three.module.min.js'), path.join(ROOT, 'assets/vendor/three.module.min.js'));
   fs.mkdirSync(path.join(ROOT, 'assets/fonts'), { recursive: true });
   for (const sub of ['cyrillic', 'latin']) for (const w of [700, 900]) {
     const f = `playfair-display-${sub}-${w}-normal.woff2`;
     fs.copyFileSync(path.join(ROOT, 'node_modules/@fontsource/playfair-display/files', f), path.join(ROOT, 'assets/fonts', f));
   }
 }
-// Здание, к которому «подлетает» камера на страницах раздела, и цвет росписи палаты внутри.
+// Снимки раздела (img/scene/*.jpg): здание, к которому «подлетает» камера, и помещение, куда она входит.
 const SECTION_SCENE = {
-  'Курс «История»': ['basil', '#8c2b24'],
-  'Спецкурс': ['museum', '#2d4f7a'],
-  'ФГУ': ['spasskaya', '#7a1f2b'],
-  'Мехмат': ['msu', '#35583f'],
-  'Курсовые работы': ['ivan', '#6b4a1e'],
+  'Курс «История»': ['basil', 'inbasil'],
+  'Спецкурс': ['museum', 'inmuseum'],
+  'ФГУ': ['spasskaya', 'inpalata'],
+  'Мехмат': ['msu', 'inmsu'],
+  'Курсовые работы': ['ivan', 'inlibrary'],
 };
+const HOME_SCENES = ['square', 'spasskaya', 'ivan', 'basil', 'msu', 'museum', 'gum', 'kremlin'];
+const sceneLayers = (keys) => '<div class="scenes" aria-hidden="true">' + keys.filter((k) => exists(`img/scene/${k}.jpg`))
+  .map((k, i) => `<div class="scene"><img src="img/scene/${k}.jpg" alt=""${i ? ' loading="lazy"' : ''} decoding="async"></div>`).join('') + '</div>';
 const pages = JSON.parse(fs.readFileSync(ROOT + '/data/pages.json', 'utf8'));
 const assets = JSON.parse(fs.readFileSync(ROOT + '/data/assetmap.json', 'utf8'));
 const WIX = 'https://solovyevka.wixsite.com/ska-ruhistory';
@@ -252,7 +254,7 @@ function navHtml(currentSlug) {
   return h + '</ul></nav>';
 }
 
-function layout({ slug, title, body, crumb, desc, pager, connect, script, scene = ['basil', '#8c2b24'] }) {
+function layout({ slug, title, body, crumb, desc, pager, connect, script, scene = ['square', 'inlibrary'] }) {
   const sc = DESIGN === 'scene';
   const t = slug === 'index' ? `${SITE} — сайт ${AUTHOR_GEN}` : `${title} — ${SITE}`;
   return `<!doctype html>
@@ -268,7 +270,7 @@ function layout({ slug, title, body, crumb, desc, pager, connect, script, scene 
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/style.css">
 ${sc ? '<link rel="stylesheet" href="assets/scene/scene.css">\n<script src="assets/scene/boot.js"></script>\n' : ''}</head>
-${sc ? (slug === 'index' ? '<body data-scene="home">' : `<body data-scene="page" data-scene-target="${scene[0]}" data-scene-accent="${scene[1]}">`) + '\n<canvas id="world" aria-hidden="true"></canvas><div class="scene-grade" aria-hidden="true"></div><div class="scene-flash" aria-hidden="true"></div>' : '<body>'}
+${sc ? (slug === 'index' ? '<body data-scene="home">' : `<body data-scene="page" data-scene-target="${scene[0]}">`) + '\n' + sceneLayers(slug === 'index' ? HOME_SCENES : scene) + '<div class="scene-grade" aria-hidden="true"></div><div class="scene-flash" aria-hidden="true"></div><canvas id="snow" aria-hidden="true"></canvas>' : '<body>'}
 <a class="skip" href="#main">К содержанию</a>
 <header class="top">
   <div class="top-in">
@@ -332,7 +334,7 @@ for (const [idx, it] of flat.entries()) {
 // contacts
 {
   const pg = pages['/contact-me'];
-  const body = `<div class="card contact">
+  let body = `<div class="card contact">
   <img class="portrait" src="img/portrait.jpg" alt="Соловьёв К. А." width="220" height="198">
   <div><h2>Соловьёв Константин Анатольевич</h2>
   <dl>
@@ -344,7 +346,11 @@ for (const [idx, it] of flat.entries()) {
   <div><h2>Вопросы по работе сайта</h2>
   <p>Не открывается страница, не скачивается файл, что-то отображается неправильно? Напишите в Telegram: <a href="https://t.me/qddwxd" target="_blank" rel="noopener">@qddwxd</a>.</p></div>
 </div>`;
-  fs.writeFileSync(`${OUT}/kontakty.html`, layout({ slug: 'kontakty', title: 'Контакты', body, crumb: '<a href="index.html">Главная</a>', scene: ['minin', '#6b4a1e'] }));
+  // Фотографии фона распространяются по свободным лицензиям: указываем авторов.
+  const credits = DESIGN === 'scene' ? readJson('../img/scene/credits.json', []) : [];
+  if (credits.length) body += `<div class="card contact tech" id="foto"><div><h2>Фотографии на сайте</h2><p>Фон сайта — фотографии с Викисклада:</p><ul class="credits">${credits.map((c) =>
+    `<li><a href="${esc(c.page)}" target="_blank" rel="noopener">${esc(c.title.replace(/^File:/, '').replace(/\.[a-z]+$/i, ''))}</a> — ${esc(c.artist || 'автор не указан')}, ${esc(c.license)}</li>`).join('')}</ul></div></div>`;
+  fs.writeFileSync(`${OUT}/kontakty.html`, layout({ slug: 'kontakty', title: 'Контакты', body, crumb: '<a href="index.html">Главная</a>', scene: ['kremlin', 'inlibrary'] }));
 }
 
 // журнал баллов
@@ -371,39 +377,38 @@ for (const [idx, it] of flat.entries()) {
 <thead><tr><th scope="col" class="num">№</th><th scope="col">Фамилия</th><th scope="col">Баллы</th><th scope="col" class="mark">Оценка</th></tr></thead>
 <tbody>${rowsHtml(view)}</tbody></table></div>
 ${selfForm}`;
-  fs.writeFileSync(`${OUT}/zhurnal-ballov.html`, layout({ slug: 'zhurnal-ballov', title: 'Журнал баллов', body, crumb: '<a href="index.html">Главная</a>', desc: 'Баллы участников: общая сумма и оценка.', connect: /^https:/.test(JOURNAL_API) ? new URL(JOURNAL_API).origin : '', script: 'assets/journal.js', scene: ['gum', '#2d4f7a'] }));
+  fs.writeFileSync(`${OUT}/zhurnal-ballov.html`, layout({ slug: 'zhurnal-ballov', title: 'Журнал баллов', body, crumb: '<a href="index.html">Главная</a>', desc: 'Баллы участников: общая сумма и оценка.', connect: /^https:/.test(JOURNAL_API) ? new URL(JOURNAL_API).origin : '', script: 'assets/journal.js', scene: ['gum', 'ingum'] }));
 }
 
-// Главная в 3D-дизайне: каждый экран — здание Красной площади и раздел сайта, по хронологии.
+// Главная: каждый экран — фотография здания Москвы и раздел сайта; прокрутка «пролетает» от снимка к снимку.
 function sceneHome(intro, news) {
   const links = (list) => `<p class="chips">${list.map(([href, t]) => `<a class="chip" href="${href}">${t}</a>`).join('')}</p>`;
-  const slide = (shot, year, place, title, text, extra) => `<section class="slide" id="s-${year || shot}" data-shot="${shot}" data-year="${year}">
-  <div class="slide-in">${year ? `<p class="big-year rise" aria-hidden="true">${year}</p>` : ''}<p class="kicker rise">${place}</p>
-  <h2 class="rise">${title}</h2>${text ? `<p class="slide-text rise">${text}</p>` : ''}${extra ? `<div class="rise">${extra}</div>` : ''}</div>
+  const slide = (shot, title, text, extra) => `<section class="slide" id="s-${shot}" data-shot="${shot}">
+  <div class="slide-in"><h2 class="rise">${title}</h2>${text ? `<p class="slide-text rise">${text}</p>` : ''}${extra ? `<div class="rise">${extra}</div>` : ''}</div>
 </section>`;
   const slides = [
-    `<section class="slide cover" id="s-start" data-shot="overview">
+    `<section class="slide cover" id="s-start" data-shot="square">
   <div class="slide-in"><p class="kicker rise">МГУ имени М. В. Ломоносова</p><h1 class="rise">Отечественная история</h1>
-  <p class="slide-text rise">Сайт для студентов, изучающих отечественную историю: программа курса, лекции, семинары, задания и результаты. Прокрутите вниз — путь по Красной площади идёт через века.</p>
+  <p class="slide-text rise">Сайт для студентов, изучающих отечественную историю: программа курса, лекции, семинары, задания и результаты.</p>
   <p class="hero-cta rise"><a class="btn" href="lekcii.html">Презентации лекций</a><a class="btn ghost" href="zhurnal-ballov.html">Журнал баллов</a></p>
   <p class="scroll-hint rise" aria-hidden="true"><i></i>Листайте</p></div>
 </section>`,
-    slide('spasskaya', 1491, 'Спасская башня Кремля', 'ФГУ', 'Рейтинговая система, задания, семинары, результаты проверки и итоги семестра.',
+    slide('spasskaya', 'ФГУ', 'Рейтинговая система, задания, семинары, результаты проверки и итоги семестра.',
       links([['fgu-rejtingovaya-sistema.html', 'Рейтинговая система'], ['fgu-gruppa-107.html', 'Группа 107'], ['fgu-zadaniya.html', 'Задания'], ['fgu-rezultaty.html', 'Результаты'], ['fgu-voprosy-k-ekzamenu.html', 'Вопросы к экзамену']])),
-    slide('ivan', 1508, 'Колокольня Ивана Великого', 'Курсовые работы', 'Темы, методика подготовки, распределение тем и индекс.',
+    slide('ivan', 'Курсовые работы', 'Темы, методика подготовки, распределение тем и индекс.',
       links([['kursovye-temy.html', 'Тематика'], ['kursovye-metodika.html', 'Методика'], ['kursovye-raspredelenie.html', 'Распределение тем'], ['kursovye-indeks.html', 'Индекс']])),
-    slide('basil', 1561, 'Покровский собор на Рву', 'Курс «История»', `Программа курса, ${lectureCount() ? lectureCount() + ' презентаций лекций' : 'презентации лекций'} и методические материалы.`,
+    slide('basil', 'Курс «История»', `Программа курса, ${lectureCount() ? lectureCount() + ' презентаций лекций' : 'презентации лекций'} и методические материалы.`,
       links([['programma.html', 'Программа'], ['lekcii.html', 'Лекции'], ['metodicheskie-materialy.html', 'Методические материалы'], ['sajty.html', 'Сайты по истории России']])),
-    slide('msu', 1755, 'Московский университет', 'Мехмат', 'Тематика семинаров, литература, эссе, рейтинг и вопросы к экзамену.',
+    slide('msu', 'Мехмат', 'Тематика семинаров, литература, эссе, рейтинг и вопросы к экзамену.',
       links([['mehmat-temy-seminarov.html', 'Семинары'], ['mehmat-literatura.html', 'Литература'], ['mehmat-zadaniya.html', 'Задания'], ['mehmat-rejting.html', 'Рейтинг'], ['mehmat-voprosy-k-ekzamenu.html', 'Вопросы к экзамену']])),
-    slide('museum', 1872, 'Исторический музей', 'Спецкурс', '«От Просвещения к постмодерну: революция и реакция в русской истории».',
+    slide('museum', 'Спецкурс', '«От Просвещения к постмодерну: революция и реакция в русской истории».',
       links([['speckurs.html', 'О спецкурсе'], ['speckurs-lekcii.html', 'Презентации лекций'], ['speckurs-seminary.html', 'Семинары'], ['speckurs-debaty.html', 'Дебаты']])),
-    slide('gum', 1893, 'Верхние торговые ряды', 'Журнал баллов и объявления', '',
+    slide('gum', 'Журнал баллов и объявления', '',
       `<ul class="news">${news}</ul>${links([['zhurnal-ballov.html', 'Журнал баллов'], ['obyavleniya.html', 'Все объявления']])}`),
-    slide('top', '', 'Красная площадь', 'О сайте', '',
+    slide('kremlin', 'О сайте', '',
       `<div class="prose">${cleanRich(intro.h)}</div>${links([['kontakty.html', 'Контакты'], ['zhurnal-ballov.html', 'Журнал баллов']])}`),
   ];
-  const line = `<nav class="era-line" aria-label="Эпохи">${[['s-start', 'Начало'], ...[1491, 1508, 1561, 1755, 1872, 1893].map((y) => ['s-' + y, y])].map(([id, t]) => `<a href="#${id}">${t}</a>`).join('')}</nav>`;
+  const line = `<nav class="era-line" aria-label="Разделы">${[['start', 'Начало'], ['spasskaya', 'ФГУ'], ['ivan', 'Курсовые'], ['basil', 'Курс'], ['msu', 'Мехмат'], ['museum', 'Спецкурс'], ['gum', 'Журнал'], ['kremlin', 'О сайте']].map(([id, t]) => `<a href="#s-${id}">${t}</a>`).join('')}</nav>`;
   return `<div class="slides">${slides.join('\n')}</div>\n${line}`;
 }
 

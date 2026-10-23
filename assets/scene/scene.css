@@ -1,4 +1,4 @@
-/* 3D-оформление: тёмная «вечерняя Москва» поверх сцены из scene.js. Подключается только при SITE_DESIGN=scene. */
+/* Оформление «Москва»: фотографии на фоне, текст на тёмном стекле. Подключается только при SITE_DESIGN=scene. */
 @font-face { font-family: "Playfair Display"; font-weight: 700; font-display: swap; src: url("../fonts/playfair-display-cyrillic-700-normal.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
 @font-face { font-family: "Playfair Display"; font-weight: 700; font-display: swap; src: url("../fonts/playfair-display-latin-700-normal.woff2") format("woff2"); unicode-range: U+0000-00FF, U+2000-206F; }
 @font-face { font-family: "Playfair Display"; font-weight: 900; font-display: swap; src: url("../fonts/playfair-display-cyrillic-900-normal.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
@@ -14,12 +14,16 @@ html.scene-on {
   color-scheme: dark; background: var(--bg);
 }
 .scene-on body { background: transparent; }
-#world { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; background: radial-gradient(120% 80% at 50% 100%, #3a2a4c, #070912 70%); }
+.scenes { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: radial-gradient(120% 80% at 50% 100%, #2a2f45, #070912 70%); }
+.scene { position: absolute; inset: 0; opacity: 0; will-change: transform, opacity; }
+.scene:first-child { opacity: 1; }
+.scene img { width: 100%; height: 100%; object-fit: cover; display: block; animation: drift 26s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: scale(1.04) translate(-1%, 0); } to { transform: scale(1.12) translate(1%, -1%); } }
+#snow { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
 .scene-grade { position: fixed; inset: 0; z-index: 1; pointer-events: none;
   background: radial-gradient(120% 90% at 50% 45%, transparent 45%, rgba(0, 0, 0, .6) 100%), linear-gradient(180deg, rgba(0, 0, 0, .45), transparent 22%, transparent 72%, rgba(0, 0, 0, .7)); }
 .scene-flash { position: fixed; inset: 0; z-index: 30; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 50%, #fff3dc, rgba(255, 236, 200, .85) 40%, rgba(255, 230, 190, .6)); }
-.scene-on .top, .scene-on main, .scene-on .foot { position: relative; z-index: 2; }
-.scene-fallback #world { background: linear-gradient(180deg, #0b1026, #2a2350 55%, #6a3c3c); }
+.scene-on .top, .scene-on main, .scene-on .foot { position: relative; z-index: 3; }
 
 /* шапка — тёмное стекло */
 .scene-on .top { position: sticky; z-index: 20; background: rgba(8, 10, 20, .55); border-bottom-color: rgba(255, 255, 255, .08); }
@@ -28,6 +32,9 @@ html.scene-on {
 .scene-on .nav .dd > ul { background: rgba(14, 16, 28, .96); border-color: var(--line); }
 .scene-on .burger { background: rgba(255, 255, 255, .06); border-color: var(--line); }
 @media (max-width: 1100px) { .scene-on .nav { background: rgba(10, 12, 22, .97); } }
+
+.credits { margin: 8px 0 0; padding-left: 1.2em; font-size: 14.5px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .scene img { animation: none; } }
 
 /* подлёт: содержимое появляется, когда камера «вошла» */
 main, .foot { transition: opacity .7s ease, transform .9s cubic-bezier(.2, .9, .3, 1); }
@@ -61,7 +68,6 @@ main, .foot { transition: opacity .7s ease, transform .9s cubic-bezier(.2, .9, .
 .slide h1 { font-size: clamp(46px, 10vw, 128px); }
 .slide h2 { font-size: clamp(36px, 6vw, 72px); }
 .kicker { font-size: 13px; letter-spacing: .32em; text-transform: uppercase; color: var(--gold); margin: 0 0 14px; }
-.big-year { font-family: var(--serif); font-weight: 900; font-size: clamp(64px, 13vw, 160px); line-height: .9; margin: 0 0 6px; color: transparent; -webkit-text-stroke: 1.5px var(--gold); font-variant-numeric: lining-nums; }
 .slide-text { font-size: clamp(17px, 1.5vw, 20px); color: #e6e8ef; margin: 0 0 8px; max-width: 60ch; }
 .slide.cover .slide-text { margin-inline: auto; }
 .slide .hero-cta { justify-content: center; margin-top: 26px; }
