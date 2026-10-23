@@ -25,7 +25,8 @@ jobs:
       - run: |
           if [ -f img/scene/request-candidates ]; then node tools/fetch-photos.mjs candidates && git rm -q img/scene/request-candidates; else node tools/fetch-photos.mjs final; fi
       - name: Сжать снимки для сайта
-        run: [ -n "$(ls img/scene/*.jpg 2>/dev/null)" ] && mogrify -resize '1920x1920>' -quality 80 -interlace Plane -strip img/scene/*.jpg || true
+        run: |
+          if ls img/scene/*.jpg >/dev/null 2>&1; then mogrify -resize '1920x1920>' -quality 80 -interlace Plane -strip img/scene/*.jpg; fi
       - name: Сохранить в ветку
         run: |
           git config user.name "github-actions[bot]"
