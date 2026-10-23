@@ -10,6 +10,26 @@ const OUT = ROOT;
 // Версия браузерной очистки из lockfile, без стороннего CDN.
 fs.mkdirSync(path.join(ROOT, 'assets/vendor'), { recursive: true });
 fs.copyFileSync(path.join(ROOT, 'node_modules/dompurify/dist/purify.es.mjs'), path.join(ROOT, 'assets/vendor/purify.es.mjs'));
+// Дизайн сайта: scene — 3D-Москва (assets/scene), classic — прежний светлый.
+// Вернуть старый дизайн: SITE_DESIGN=classic npm run build (в GitHub — переменная репозитория SITE_DESIGN).
+const DESIGN = process.env.SITE_DESIGN || 'scene';
+if (!['scene', 'classic'].includes(DESIGN)) throw new Error('SITE_DESIGN: scene или classic');
+if (DESIGN === 'scene') {
+  fs.copyFileSync(path.join(ROOT, 'node_modules/three/build/three.module.min.js'), path.join(ROOT, 'assets/vendor/three.module.min.js'));
+  fs.mkdirSync(path.join(ROOT, 'assets/fonts'), { recursive: true });
+  for (const sub of ['cyrillic', 'latin']) for (const w of [700, 900]) {
+    const f = `playfair-display-${sub}-${w}-normal.woff2`;
+    fs.copyFileSync(path.join(ROOT, 'node_modules/@fontsource/playfair-display/files', f), path.join(ROOT, 'assets/fonts', f));
+  }
+}
+// Здание, к которому «подлетает» камера на страницах раздела, и цвет росписи палаты внутри.
+const SECTION_SCENE = {
+  'Курс «История»': ['basil', '#8c2b24'],
+  'Спецкурс': ['museum', '#2d4f7a'],
+  'ФГУ': ['spasskaya', '#7a1f2b'],
+  'Мехмат': ['msu', '#35583f'],
+  'Курсовые работы': ['ivan', '#6b4a1e'],
+};
 const pages = JSON.parse(fs.readFileSync(ROOT + '/data/pages.json', 'utf8'));
 const assets = JSON.parse(fs.readFileSync(ROOT + '/data/assetmap.json', 'utf8'));
 const WIX = 'https://solovyevka.wixsite.com/ska-ruhistory';
@@ -232,7 +252,8 @@ function navHtml(currentSlug) {
   return h + '</ul></nav>';
 }
 
-function layout({ slug, title, body, crumb, desc, pager, connect, script }) {
+function layout({ slug, title, body, crumb, desc, pager, connect, script, scene = ['basil', '#8c2b24'] }) {
+  const sc = DESIGN === 'scene';
   const t = slug === 'index' ? `${SITE} — сайт ${AUTHOR_GEN}` : `${title} — ${SITE}`;
   return `<!doctype html>
 <html lang="ru">
@@ -246,8 +267,8 @@ function layout({ slug, title, body, crumb, desc, pager, connect, script }) {
 <meta name="theme-color" content="#7a1f2b">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/style.css">
-</head>
-<body>
+${sc ? '<link rel="stylesheet" href="assets/scene/scene.css">\n<script src="assets/scene/boot.js"></script>\n' : ''}</head>
+${sc ? (slug === 'index' ? '<body data-scene="home">' : `<body data-scene="page" data-scene-target="${scene[0]}" data-scene-accent="${scene[1]}">`) + '\n<canvas id="world" aria-hidden="true"></canvas><div class="scene-grade" aria-hidden="true"></div><div class="scene-flash" aria-hidden="true"></div>' : '<body>'}
 <a class="skip" href="#main">К содержанию</a>
 <header class="top">
   <div class="top-in">
@@ -270,7 +291,7 @@ ${pager || ''}
   </div>
 </footer>
 <script src="assets/app.js"></script>
-${script ? `<script type="module" src="${script}"></script>\n` : ''}</body>
+${sc ? '<script type="module" src="assets/scene/scene.js"></script>\n' : ''}${script ? `<script type="module" src="${script}"></script>\n` : ''}</body>
 </html>`;
 }
 
@@ -304,7 +325,7 @@ for (const [idx, it] of flat.entries()) {
   const i = sectionItems.indexOf(it);
   const prev = sectionItems[i - 1], next = sectionItems[i + 1];
   const pager = (prev || next) ? `<nav class="pager" aria-label="Соседние страницы">${prev ? `<a class="prev" href="${prev.slug}.html"><small>Назад</small>${prev.title}</a>` : '<span></span>'}${next ? `<a class="next" href="${next.slug}.html"><small>Далее</small>${next.title}</a>` : '<span></span>'}</nav>` : '';
-  fs.writeFileSync(`${OUT}/${it.slug}.html`, layout({ slug: it.slug, title: it.title, body: bodies[it.p], crumb: `<a href="index.html">Главная</a> / ${it.section}`, pager }));
+  fs.writeFileSync(`${OUT}/${it.slug}.html`, layout({ slug: it.slug, title: it.title, body: bodies[it.p], crumb: `<a href="index.html">Главная</a> / ${it.section}`, pager, scene: SECTION_SCENE[it.section] }));
   results.push(it.slug);
 }
 
@@ -323,7 +344,7 @@ for (const [idx, it] of flat.entries()) {
   <div><h2>Вопросы по работе сайта</h2>
   <p>Не открывается страница, не скачивается файл, что-то отображается неправильно? Напишите в Telegram: <a href="https://t.me/qddwxd" target="_blank" rel="noopener">@qddwxd</a>.</p></div>
 </div>`;
-  fs.writeFileSync(`${OUT}/kontakty.html`, layout({ slug: 'kontakty', title: 'Контакты', body, crumb: '<a href="index.html">Главная</a>' }));
+  fs.writeFileSync(`${OUT}/kontakty.html`, layout({ slug: 'kontakty', title: 'Контакты', body, crumb: '<a href="index.html">Главная</a>', scene: ['minin', '#6b4a1e'] }));
 }
 
 // журнал баллов
@@ -350,7 +371,40 @@ for (const [idx, it] of flat.entries()) {
 <thead><tr><th scope="col" class="num">№</th><th scope="col">Фамилия</th><th scope="col">Баллы</th><th scope="col" class="mark">Оценка</th></tr></thead>
 <tbody>${rowsHtml(view)}</tbody></table></div>
 ${selfForm}`;
-  fs.writeFileSync(`${OUT}/zhurnal-ballov.html`, layout({ slug: 'zhurnal-ballov', title: 'Журнал баллов', body, crumb: '<a href="index.html">Главная</a>', desc: 'Баллы участников: общая сумма и оценка.', connect: /^https:/.test(JOURNAL_API) ? new URL(JOURNAL_API).origin : '', script: 'assets/journal.js' }));
+  fs.writeFileSync(`${OUT}/zhurnal-ballov.html`, layout({ slug: 'zhurnal-ballov', title: 'Журнал баллов', body, crumb: '<a href="index.html">Главная</a>', desc: 'Баллы участников: общая сумма и оценка.', connect: /^https:/.test(JOURNAL_API) ? new URL(JOURNAL_API).origin : '', script: 'assets/journal.js', scene: ['gum', '#2d4f7a'] }));
+}
+
+// Главная в 3D-дизайне: каждый экран — здание Красной площади и раздел сайта, по хронологии.
+function sceneHome(intro, news) {
+  const links = (list) => `<p class="chips">${list.map(([href, t]) => `<a class="chip" href="${href}">${t}</a>`).join('')}</p>`;
+  const slide = (shot, year, place, title, text, extra) => `<section class="slide" id="s-${year || shot}" data-shot="${shot}" data-year="${year}">
+  <div class="slide-in">${year ? `<p class="big-year rise" aria-hidden="true">${year}</p>` : ''}<p class="kicker rise">${place}</p>
+  <h2 class="rise">${title}</h2>${text ? `<p class="slide-text rise">${text}</p>` : ''}${extra ? `<div class="rise">${extra}</div>` : ''}</div>
+</section>`;
+  const slides = [
+    `<section class="slide cover" id="s-start" data-shot="overview">
+  <div class="slide-in"><p class="kicker rise">МГУ имени М. В. Ломоносова</p><h1 class="rise">Отечественная история</h1>
+  <p class="slide-text rise">Сайт для студентов, изучающих отечественную историю: программа курса, лекции, семинары, задания и результаты. Прокрутите вниз — путь по Красной площади идёт через века.</p>
+  <p class="hero-cta rise"><a class="btn" href="lekcii.html">Презентации лекций</a><a class="btn ghost" href="zhurnal-ballov.html">Журнал баллов</a></p>
+  <p class="scroll-hint rise" aria-hidden="true"><i></i>Листайте</p></div>
+</section>`,
+    slide('spasskaya', 1491, 'Спасская башня Кремля', 'ФГУ', 'Рейтинговая система, задания, семинары, результаты проверки и итоги семестра.',
+      links([['fgu-rejtingovaya-sistema.html', 'Рейтинговая система'], ['fgu-gruppa-107.html', 'Группа 107'], ['fgu-zadaniya.html', 'Задания'], ['fgu-rezultaty.html', 'Результаты'], ['fgu-voprosy-k-ekzamenu.html', 'Вопросы к экзамену']])),
+    slide('ivan', 1508, 'Колокольня Ивана Великого', 'Курсовые работы', 'Темы, методика подготовки, распределение тем и индекс.',
+      links([['kursovye-temy.html', 'Тематика'], ['kursovye-metodika.html', 'Методика'], ['kursovye-raspredelenie.html', 'Распределение тем'], ['kursovye-indeks.html', 'Индекс']])),
+    slide('basil', 1561, 'Покровский собор на Рву', 'Курс «История»', `Программа курса, ${lectureCount() ? lectureCount() + ' презентаций лекций' : 'презентации лекций'} и методические материалы.`,
+      links([['programma.html', 'Программа'], ['lekcii.html', 'Лекции'], ['metodicheskie-materialy.html', 'Методические материалы'], ['sajty.html', 'Сайты по истории России']])),
+    slide('msu', 1755, 'Московский университет', 'Мехмат', 'Тематика семинаров, литература, эссе, рейтинг и вопросы к экзамену.',
+      links([['mehmat-temy-seminarov.html', 'Семинары'], ['mehmat-literatura.html', 'Литература'], ['mehmat-zadaniya.html', 'Задания'], ['mehmat-rejting.html', 'Рейтинг'], ['mehmat-voprosy-k-ekzamenu.html', 'Вопросы к экзамену']])),
+    slide('museum', 1872, 'Исторический музей', 'Спецкурс', '«От Просвещения к постмодерну: революция и реакция в русской истории».',
+      links([['speckurs.html', 'О спецкурсе'], ['speckurs-lekcii.html', 'Презентации лекций'], ['speckurs-seminary.html', 'Семинары'], ['speckurs-debaty.html', 'Дебаты']])),
+    slide('gum', 1893, 'Верхние торговые ряды', 'Журнал баллов и объявления', '',
+      `<ul class="news">${news}</ul>${links([['zhurnal-ballov.html', 'Журнал баллов'], ['obyavleniya.html', 'Все объявления']])}`),
+    slide('top', '', 'Красная площадь', 'О сайте', '',
+      `<div class="prose">${cleanRich(intro.h)}</div>${links([['kontakty.html', 'Контакты'], ['zhurnal-ballov.html', 'Журнал баллов']])}`),
+  ];
+  const line = `<nav class="era-line" aria-label="Эпохи">${[['s-start', 'Начало'], ...[1491, 1508, 1561, 1755, 1872, 1893].map((y) => ['s-' + y, y])].map(([id, t]) => `<a href="#${id}">${t}</a>`).join('')}</nav>`;
+  return `<div class="slides">${slides.join('\n')}</div>\n${line}`;
 }
 
 // home
@@ -377,7 +431,7 @@ ${selfForm}`;
   <section class="prose card"><h2>О сайте</h2>${cleanRich(intro.h).replace(/«методические материалы»|"методические материалы"/, '«<a href="metodicheskie-materialy.html">методические материалы</a>»').replace(/"Лекции"/, '«<a href="lekcii.html">Лекции</a>»').replace(/"объявления"/, '«<a href="obyavleniya.html">объявления</a>»')}</section>
   <section class="card"><h2>Объявления</h2><ul class="news">${news}</ul><p class="more"><a href="obyavleniya.html">Все объявления →</a></p></section>
 </div>`;
-  fs.writeFileSync(`${OUT}/index.html`, layout({ slug: 'index', title: SITE, body }));
+  fs.writeFileSync(`${OUT}/index.html`, layout({ slug: 'index', title: SITE, body: DESIGN === 'scene' ? sceneHome(intro, news) : body }));
 }
 
 console.log('built:', results.length + 3, 'pages');
