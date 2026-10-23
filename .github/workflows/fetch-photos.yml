@@ -1,0 +1,29 @@
+name: Фотографии для фона
+
+# Скачивает фотографии с Викисклада на сервере GitHub и сохраняет их в ветку.
+# Запускается при изменении списка (img/scene/choice.json) или скрипта.
+on:
+  push:
+    paths:
+      - tools/fetch-photos.mjs
+      - img/scene/choice.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tools/fetch-photos.mjs ${{ hashFiles('img/scene/choice.json') != '' && 'final' || 'candidates' }}
+      - name: Сохранить в ветку
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add img/scene
+          git diff --cached --quiet || (git commit -m "Фотографии для фона с Викисклада" && git push)
