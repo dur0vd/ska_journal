@@ -139,3 +139,4 @@ html.scene-on[data-theme="dark"] .theme-toggle .sun { display: none; } html.scen
 @media (max-width: 1100px) { .scene-on .top-in { gap: 10px; } .theme-toggle { margin-left: auto; order: 2; } .scene-on .burger { margin-left: 0; order: 3; } .scene-on .nav { order: 4; } }
 @media (prefers-color-scheme: light) { html.scene-on:not([data-theme="dark"]) .scene-grade { background: radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(0, 0, 0, .3) 100%), linear-gradient(180deg, rgba(0, 0, 0, .3), transparent 22%); } }
 html.scene-on[data-theme="light"] .scene-grade { background: radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(0, 0, 0, .3) 100%), linear-gradient(180deg, rgba(0, 0, 0, .3), transparent 22%); }
+.brand-emblem { background: none !important; padding: 0; display: block; }
