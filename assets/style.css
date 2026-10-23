@@ -8,10 +8,11 @@
   --accent-ink: #ffffff;
   --accent-soft: #f4e7e8;
   --gold: #b08d57;
-  /* оценки в журнале баллов: 5 — зелёный, 4 — жёлтый, 3 — оранжевый */
+  /* оценки в журнале баллов: 5 — зелёный, 4 — жёлтый, 3 — оранжевый, незачёт — красный */
   --g5: #2e7d32; --g5-soft: #e3f2e4;
   --g4: #f5c400; --g4-soft: #fdf6d3;
   --g3: #ef7d00; --g3-soft: #fde9d6;
+  --g2: #c62828; --g2-soft: #fbe3e3;
   --g-ink: #1f2430;
   --shadow: 0 1px 2px rgba(31, 36, 48, .06), 0 8px 24px rgba(31, 36, 48, .06);
   --radius: 14px;
@@ -32,6 +33,7 @@
     --g5: #5cbf62; --g5-soft: #1b2e1d;
     --g4: #f2cf3a; --g4-soft: #2f2a12;
     --g3: #f49a3c; --g3-soft: #33230f;
+    --g2: #ef5350; --g2-soft: #351a1a;
     --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
   }
 }
@@ -234,12 +236,13 @@ a:hover { text-decoration-thickness: 2px; }
 .jr tr.g5 { background: var(--g5-soft); } .jr tr.g5 progress { color: var(--g5); }
 .jr tr.g4 { background: var(--g4-soft); } .jr tr.g4 progress { color: var(--g4); }
 .jr tr.g3 { background: var(--g3-soft); } .jr tr.g3 progress { color: var(--g3); }
+.jr tr.g2 { background: var(--g2-soft); } .jr tr.g2 progress { color: var(--g2); }
 .jr tr.mine th { text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px; }
 .badge { display: inline-grid; place-items: center; min-width: 30px; height: 30px; border-radius: 8px; font: 700 16px/1 var(--sans); color: var(--g-ink); background: var(--line); }
 .g5 .badge { background: var(--g5); color: #fff; }
 .g4 .badge { background: var(--g4); }
 .g3 .badge { background: var(--g3); }
-.jr .none { color: var(--muted); }
+.g2 .badge { background: var(--g2); color: #fff; padding: 0 8px; font-size: 13px; }
 .jr-self { max-width: 820px; margin-top: 24px; }
 .jr-self code { background: var(--accent-soft); padding: 1px 6px; border-radius: 5px; }
 .jr-self label { display: block; font-weight: 600; margin: 12px 0 6px; }

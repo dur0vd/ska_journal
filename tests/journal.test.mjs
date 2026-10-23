@@ -8,7 +8,7 @@ test('Grades follow the 138-point scale', () => {
   assert.equal(grade(138).mark, 5); assert.equal(grade(90).mark, 5);
   assert.equal(grade(89.99).mark, 4); assert.equal(grade(75).mark, 4);
   assert.equal(grade(74.5).mark, 3); assert.equal(grade(50).mark, 3);
-  assert.equal(grade(49.99), null); assert.equal(grade(0), null);
+  assert.equal(grade(49.99).badge, 'незачёт'); assert.equal(grade(0).mark, 2);
 });
 
 test('Points can be entered one by one or several at once', () => {

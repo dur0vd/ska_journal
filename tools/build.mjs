@@ -329,7 +329,7 @@ for (const [idx, it] of flat.entries()) {
 // журнал баллов
 {
   const view = publicView(readJson('journal.json', EMPTY_JOURNAL));
-  const legend = GRADES.map((g) => `<li class="g${g.mark}"><span class="badge">${g.mark}</span>${g.min}${g === GRADES[0] ? '+' : '–' + (GRADES[GRADES.indexOf(g) - 1].min - 1)} баллов</li>`).join('');
+  const legend = GRADES.map((g, i) => `<li class="g${g.mark}"><span class="badge">${g.badge}</span>${i === 0 ? g.min + '+' : g.min > 0 ? g.min + '–' + (GRADES[i - 1].min - 1) : 'меньше ' + GRADES[i - 1].min} баллов</li>`).join('');
   const options = view.participants.map((p) => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
   const selfForm = JOURNAL_API ? `<section class="card jr-self" aria-labelledby="jr-self-h">
   <h2 id="jr-self-h">Внести свои баллы</h2>

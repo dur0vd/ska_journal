@@ -1,10 +1,11 @@
 // Журнал баллов: общие правила для сайта, управления, сервера баллов и сборки.
 export const MAX_POINTS = 138;
-// Оценка по сумме баллов. Ниже 50 оценка не ставится.
+// Оценка по сумме баллов. Ниже 50 — незачёт.
 export const GRADES = [
-  { min: 90, mark: 5, label: 'отлично' },
-  { min: 75, mark: 4, label: 'хорошо' },
-  { min: 50, mark: 3, label: 'удовлетворительно' },
+  { min: 90, mark: 5, badge: '5', label: 'отлично' },
+  { min: 75, mark: 4, badge: '4', label: 'хорошо' },
+  { min: 50, mark: 3, badge: '3', label: 'удовлетворительно' },
+  { min: -Infinity, mark: 2, badge: 'незачёт', label: 'незачёт' },
 ];
 export const MAX_ENTRIES_AT_ONCE = 20;
 export const EMPTY_JOURNAL = { participants: [] };
@@ -12,7 +13,7 @@ export const EMPTY_JOURNAL = { participants: [] };
 export class InputError extends Error {}
 
 export function grade(total) {
-  return GRADES.find((g) => total >= g.min) || null;
+  return GRADES.find((g) => total >= g.min);
 }
 
 const round = (n) => Math.round(n * 100) / 100;
@@ -62,9 +63,9 @@ export function rowsHtml(view) {
   if (!view.participants.length) return '<tr><td colspan="4" class="empty">Участники ещё не добавлены.</td></tr>';
   return view.participants.map((p, i) => {
     const g = grade(p.total);
-    return `<tr class="${g ? 'g' + g.mark : 'g0'}" data-id="${esc(p.id)}"><td class="num">${i + 1}</td><th scope="row">${esc(p.name)}</th>` +
+    return `<tr class="g${g.mark}" data-id="${esc(p.id)}"><td class="num">${i + 1}</td><th scope="row">${esc(p.name)}</th>` +
       `<td class="pts"><strong>${formatPoints(p.total)}</strong><small> / ${MAX_POINTS}</small><progress max="${MAX_POINTS}" value="${p.total}"></progress></td>` +
-      `<td class="mark">${g ? `<span class="badge">${g.mark}</span>` : '<span class="none">—</span>'}</td></tr>`;
+      `<td class="mark"><span class="badge">${g.badge}</span></td></tr>`;
   }).join('');
 }
 

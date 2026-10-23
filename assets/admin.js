@@ -595,10 +595,10 @@ import * as Journal from './journal-core.js';
     if (!list.length) { $('jr-rows').innerHTML = '<tr><td colspan="5" class="empty">Участников пока нет. Добавьте их ниже.</td></tr>'; return; }
     $('jr-rows').innerHTML = list.map(function (p) {
       var sum = Journal.total(p), g = Journal.grade(sum), id = esc(p.id);
-      var row = '<tr class="' + (g ? 'g' + g.mark : 'g0') + '" data-id="' + id + '">' +
+      var row = '<tr class="g' + g.mark + '" data-id="' + id + '">' +
         '<th scope="row">' + esc(p.name) + '</th>' +
         '<td class="pts"><strong>' + Journal.formatPoints(sum) + '</strong></td>' +
-        '<td class="mark">' + (g ? '<span class="badge">' + g.mark + '</span>' : '<span class="none">—</span>') + '</td>' +
+        '<td class="mark">' + '<span class="badge">' + g.badge + '</span>' + '</td>' +
         '<td><form class="jr-add-one"><input type="text" inputmode="decimal" autocomplete="off" aria-label="Баллы: ' + esc(p.name) + '" placeholder="+"><button class="btn" type="submit">ОК</button></form></td>' +
         '<td class="jr-actions"><button class="link" type="button" data-act="history">' + (jrOpen[p.id] ? 'Скрыть' : 'История') + '</button></td></tr>';
       if (jrOpen[p.id]) {

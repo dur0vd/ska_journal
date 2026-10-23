@@ -70,7 +70,7 @@ import { formatPoints, grade, normalizeCode, rowsHtml } from './journal-core.js'
         } catch (err) {}
         render(data, id);
         var g = grade(data.total);
-        status('ok', 'Добавлено. Ваша сумма: ' + formatPoints(data.total) + (g ? ' — оценка ' + g.mark + '.' : '.'));
+        status('ok', 'Добавлено. Ваша сумма: ' + formatPoints(data.total) + (g.mark > 2 ? ' — оценка ' + g.mark + '.' : ' — пока незачёт.'));
         $('jr-points').value = '';
         $('jr-points').focus();
       })
