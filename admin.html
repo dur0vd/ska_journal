@@ -44,6 +44,7 @@
       <button role="tab" aria-selected="true" data-tab="news">Объявления</button>
       <button role="tab" aria-selected="false" data-tab="lec">Лекции</button>
       <button role="tab" aria-selected="false" data-tab="pages">Страницы</button>
+      <button role="tab" aria-selected="false" data-tab="jr">Баллы</button>
     </div>
 
     <!-- Объявления -->
@@ -165,6 +166,36 @@
         <h2>Предпросмотр</h2>
         <div id="p-preview-content" class="prose edited-page"></div>
       </section>
+    </section>
+
+    <!-- Журнал баллов -->
+    <section id="tab-jr" class="tabpane" hidden>
+      <div class="card">
+        <h2>Журнал баллов</h2>
+        <p>Впишите число в поле рядом с фамилией и нажмите «ОК» (или Enter): баллы прибавятся к сумме. Можно заполнить поля у нескольких участников и сохранить всё сразу. Несколько чисел через пробел (<code>5 3 2</code>) сложатся; минус (<code>-2</code>) снимает баллы. Максимум — <span id="jr-max"></span> баллов.</p>
+        <p><a href="zhurnal-ballov.html" target="_blank" rel="noopener">Открыть журнал на сайте ↗</a></p>
+        <div class="jr-wrap">
+          <table class="jr jr-admin">
+            <thead><tr><th scope="col">Фамилия</th><th scope="col">Сумма</th><th scope="col" class="mark">Оценка</th><th scope="col">Добавить</th><th scope="col"><span class="visually-hidden">Действия</span></th></tr></thead>
+            <tbody id="jr-rows"><tr><td colspan="5" class="empty">Загружаю…</td></tr></tbody>
+          </table>
+        </div>
+        <div class="editor-actions"><button id="jr-save-all" class="btn" type="button">Сохранить все введённые баллы</button></div>
+      </div>
+      <div class="card">
+        <h2>Добавить участников</h2>
+        <form id="jr-add-form">
+          <label for="jr-names">Фамилии, по одной в строке</label>
+          <textarea id="jr-names" rows="5" required placeholder="Иванов Иван&#10;Петрова Мария"></textarea>
+          <button class="btn" type="submit">Добавить и выдать коды</button>
+        </form>
+        <p class="hint">Каждому выдаётся код: с ним участник сам вносит себе баллы на странице журнала. Коды показываются только один раз, сохраните или разошлите их сразу. Потерянный код можно заменить кнопкой «Новый код».</p>
+        <div id="jr-codes" class="jr-codes" hidden>
+          <h3>Коды участников</h3>
+          <ul id="jr-codes-list"></ul>
+          <button id="jr-codes-copy" class="del" type="button">Скопировать список</button>
+        </div>
+      </div>
     </section>
   </div>
 

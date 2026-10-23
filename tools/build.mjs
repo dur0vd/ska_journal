@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 import * as cheerio from 'cheerio';
 import { sanitizePage } from './page-content.mjs';
+import { GRADES, MAX_POINTS, EMPTY_JOURNAL, publicView, rowsHtml } from '../assets/journal-core.js';
 
 const OUT = ROOT;
 // Версия браузерной очистки из lockfile, без стороннего CDN.
@@ -16,6 +17,9 @@ const WIX = 'https://solovyevka.wixsite.com/ska-ruhistory';
 const SITE = 'Отечественная история';
 const AUTHOR = 'К. А. Соловьёв';
 const AUTHOR_GEN = 'К. А. Соловьёва';
+// Адрес сервера журнала баллов (worker/README.md). Пусто — участники не могут вносить баллы сами.
+const JOURNAL_API = process.env.JOURNAL_API || '';
+if (JOURNAL_API && !/^(https:\/\/[a-z0-9.-]+(:\d+)?(\/[a-zA-Z0-9_./-]*)?|\/[a-zA-Z0-9_./-]*)$/.test(JOURNAL_API)) throw new Error('JOURNAL_API: нужен адрес https://… или /путь');
 
 // ---- structure -------------------------------------------------------------
 // [wixPath, slug, title]
@@ -215,6 +219,7 @@ for (const s of NAV) for (const [p, slug, title] of s.items) flat.push({ p, slug
 function navHtml(currentSlug) {
   let h = '<nav class="nav" id="nav" aria-label="Основное меню"><ul>';
   h += `<li><a href="index.html"${currentSlug === 'index' ? ' aria-current="page"' : ''}>Главная</a></li>`;
+  h += `<li><a href="zhurnal-ballov.html"${currentSlug === 'zhurnal-ballov' ? ' aria-current="page"' : ''}>Журнал баллов</a></li>`;
   for (const s of NAV) {
     const items = s.items.filter(([p]) => built.has(p));
     if (!items.length) continue;
@@ -227,13 +232,13 @@ function navHtml(currentSlug) {
   return h + '</ul></nav>';
 }
 
-function layout({ slug, title, body, crumb, desc, pager }) {
+function layout({ slug, title, body, crumb, desc, pager, connect, script }) {
   const t = slug === 'index' ? `${SITE} — сайт ${AUTHOR_GEN}` : `${title} — ${SITE}`;
   return `<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self';${connect ? ` connect-src 'self' ${connect};` : ''} object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(t)}</title>
@@ -265,7 +270,7 @@ ${pager || ''}
   </div>
 </footer>
 <script src="assets/app.js"></script>
-</body>
+${script ? `<script type="module" src="${script}"></script>\n` : ''}</body>
 </html>`;
 }
 
@@ -321,6 +326,33 @@ for (const [idx, it] of flat.entries()) {
   fs.writeFileSync(`${OUT}/kontakty.html`, layout({ slug: 'kontakty', title: 'Контакты', body, crumb: '<a href="index.html">Главная</a>' }));
 }
 
+// журнал баллов
+{
+  const view = publicView(readJson('journal.json', EMPTY_JOURNAL));
+  const legend = GRADES.map((g) => `<li class="g${g.mark}"><span class="badge">${g.mark}</span>${g.min}${g === GRADES[0] ? '+' : '–' + (GRADES[GRADES.indexOf(g) - 1].min - 1)} баллов</li>`).join('');
+  const options = view.participants.map((p) => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+  const selfForm = JOURNAL_API ? `<section class="card jr-self" aria-labelledby="jr-self-h">
+  <h2 id="jr-self-h">Внести свои баллы</h2>
+  <p>Код выдаёт преподаватель. Можно вписать сразу несколько чисел через пробел, например <code>5 3 2</code>: они сложатся.</p>
+  <form id="jr-form">
+    <div class="jr-who">
+      <div><label for="jr-id">Фамилия</label><select id="jr-id" required><option value="">— выберите себя —</option>${options}</select></div>
+      <div><label for="jr-code">Код</label><input id="jr-code" type="password" autocomplete="off" spellcheck="false" autocapitalize="characters" placeholder="ABCDE-FGHJK" required></div>
+    </div>
+    <label class="jr-remember"><input id="jr-remember" type="checkbox"> Запомнить фамилию и код на этом устройстве</label>
+    <div class="jr-add"><label for="jr-points">Баллы</label><input id="jr-points" type="text" inputmode="decimal" autocomplete="off" placeholder="Например: 5" required><button class="btn" type="submit">ОК</button></div>
+  </form>
+  <p id="jr-status" class="jr-status" role="status" aria-live="polite" hidden></p>
+</section>` : '';
+  const body = `<p class="lead">Максимум за семестр — <strong>${MAX_POINTS} баллов</strong>. Сумма считается автоматически.</p>
+<ul class="jr-legend" aria-label="Оценки">${legend}</ul>
+<div class="jr-wrap" id="jr-table" data-api="${esc(JOURNAL_API)}"><table class="jr">
+<thead><tr><th scope="col" class="num">№</th><th scope="col">Фамилия</th><th scope="col">Баллы</th><th scope="col" class="mark">Оценка</th></tr></thead>
+<tbody>${rowsHtml(view)}</tbody></table></div>
+${selfForm}`;
+  fs.writeFileSync(`${OUT}/zhurnal-ballov.html`, layout({ slug: 'zhurnal-ballov', title: 'Журнал баллов', body, crumb: '<a href="index.html">Главная</a>', desc: 'Баллы участников: общая сумма и оценка.', connect: /^https:/.test(JOURNAL_API) ? new URL(JOURNAL_API).origin : '', script: 'assets/journal.js' }));
+}
+
 // home
 {
   const intro = pages['/'].blocks.find((b) => b.k === 'rt');
@@ -331,7 +363,7 @@ for (const [idx, it] of flat.entries()) {
   <p class="eyebrow">МГУ имени М. В. Ломоносова</p>
   <h1>Отечественная история</h1>
   <p class="hero-p">Сайт для студентов, изучающих отечественную историю. Программа курса, лекции, семинары, задания и результаты проверки работ.</p>
-  <div class="hero-cta"><a class="btn" href="lekcii.html">Презентации лекций</a><a class="btn ghost" href="programma.html">Программа курса</a></div>
+  <div class="hero-cta"><a class="btn" href="lekcii.html">Презентации лекций</a><a class="btn ghost" href="zhurnal-ballov.html">Журнал баллов</a><a class="btn ghost" href="programma.html">Программа курса</a></div>
 </section>
 <section class="tiles" aria-label="Разделы">
   ${tile('lekcii.html', 'Лекции', `${lectureCount()} презентаций для ФГУ и мехмата`, '01')}
@@ -348,4 +380,4 @@ for (const [idx, it] of flat.entries()) {
   fs.writeFileSync(`${OUT}/index.html`, layout({ slug: 'index', title: SITE, body }));
 }
 
-console.log('built:', results.length + 2, 'pages');
+console.log('built:', results.length + 3, 'pages');

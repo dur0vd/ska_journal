@@ -1,0 +1,9 @@
+name = "ska-journal"
+main = "journal-worker.mjs"
+compatibility_date = "2026-01-01"
+
+[vars]
+GITHUB_REPO = "dur0vd/ska_hist"
+GITHUB_BRANCH = "main"
+ALLOWED_ORIGINS = "https://dur0vd.github.io"
+# GITHUB_TOKEN задаётся секретом: npx wrangler secret put GITHUB_TOKEN

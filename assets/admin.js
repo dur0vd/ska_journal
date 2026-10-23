@@ -1,5 +1,6 @@
 import PageContent from './page-content.js';
 import { safeAttachmentName } from './content-policy.js';
+import * as Journal from './journal-core.js';
 
 (function () {
   'use strict';
@@ -89,7 +90,7 @@ import { safeAttachmentName } from './content-policy.js';
       if (r.status === 401) throw new Error('Ключ не подошёл или истёк. Выйдите и введите ключ заново.');
       if (r.status === 403 || r.status === 404 && opts.method) throw new Error('Нет прав на изменение. Проверьте ключ (см. инструкцию).');
       if (r.status === 404) return null;
-      if (r.status === 409 || r.status === 422) throw new Error('Файл только что изменился. Повторите действие.');
+      if (r.status === 409 || r.status === 422) throw Object.assign(new Error('Файл только что изменился. Повторите действие.'), { conflict: true });
       if (!r.ok) throw new Error('Ошибка GitHub: ' + r.status);
       return r.status === 204 ? {} : r.json();
     });
@@ -169,6 +170,7 @@ import { safeAttachmentName } from './content-policy.js';
         pane.hidden = pane.id !== 'tab-' + b.dataset.tab;
       });
       if (b.dataset.tab === 'pages' && !pageLoaded) loadPage();
+      if (b.dataset.tab === 'jr') loadJournal();
     });
   });
 
@@ -539,6 +541,193 @@ import { safeAttachmentName } from './content-policy.js';
   });
   window.addEventListener('beforeunload', function (e) {
     if (pageDirty || pageWorking) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  // ---------- журнал баллов ----------
+  var JR_PATH = 'data/journal.json';
+  var jr = Journal.EMPTY_JOURNAL;
+  var jrOpen = {};   // id участника -> показана история
+  $('jr-max').textContent = Journal.MAX_POINTS;
+
+  // Изменение всегда применяется к свежей версии файла: участники могут вносить баллы одновременно.
+  function updateJournal(mutate, message) {
+    var attempt = function (n) {
+      return readJson(JR_PATH, structuredClone(Journal.EMPTY_JOURNAL)).then(function (r) {
+        mutate(r.data);
+        return writeJson(JR_PATH, r.data, r.sha, 'Журнал баллов: ' + message).then(function () { return r.data; });
+      }).catch(function (err) {
+        if (err.conflict && n < 3) return attempt(n + 1);
+        throw err;
+      });
+    };
+    return attempt(0).then(function (data) { jr = data; renderJournal(); return data; });
+  }
+  function findP(data, id) {
+    var p = data.participants.find(function (x) { return x.id === id; });
+    if (!p) throw new Error('Участник не найден: возможно, его только что удалили. Обновите вкладку.');
+    return p;
+  }
+
+  function loadJournal() {
+    readJson(JR_PATH, Journal.EMPTY_JOURNAL).then(function (r) { jr = r.data; renderJournal(); })
+      .catch(function (err) { status('err', err.message); });
+  }
+
+  function ruDateTime(iso) {
+    var d = new Date(iso);
+    return d.toLocaleDateString('ru-RU') + ' ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function renderJournal() {
+    // Не теряем числа, которые ещё не сохранены.
+    var typed = {};
+    Array.prototype.forEach.call($('jr-rows').querySelectorAll('tr[data-id]'), function (tr) {
+      typed[tr.dataset.id] = tr.querySelector('.jr-add-one input').value;
+    });
+    renderJournalRows();
+    Object.keys(typed).forEach(function (id) {
+      var input = $('jr-rows').querySelector('tr[data-id="' + CSS.escape(id) + '"] .jr-add-one input');
+      if (input) input.value = typed[id];
+    });
+  }
+  function renderJournalRows() {
+    var list = jr.participants.slice().sort(function (a, b) { return a.name.localeCompare(b.name, 'ru'); });
+    if (!list.length) { $('jr-rows').innerHTML = '<tr><td colspan="5" class="empty">Участников пока нет. Добавьте их ниже.</td></tr>'; return; }
+    $('jr-rows').innerHTML = list.map(function (p) {
+      var sum = Journal.total(p), g = Journal.grade(sum), id = esc(p.id);
+      var row = '<tr class="' + (g ? 'g' + g.mark : 'g0') + '" data-id="' + id + '">' +
+        '<th scope="row">' + esc(p.name) + '</th>' +
+        '<td class="pts"><strong>' + Journal.formatPoints(sum) + '</strong></td>' +
+        '<td class="mark">' + (g ? '<span class="badge">' + g.mark + '</span>' : '<span class="none">—</span>') + '</td>' +
+        '<td><form class="jr-add-one"><input type="text" inputmode="decimal" autocomplete="off" aria-label="Баллы: ' + esc(p.name) + '" placeholder="+"><button class="btn" type="submit">ОК</button></form></td>' +
+        '<td class="jr-actions"><button class="link" type="button" data-act="history">' + (jrOpen[p.id] ? 'Скрыть' : 'История') + '</button></td></tr>';
+      if (jrOpen[p.id]) {
+        var entries = (p.entries || []).slice().reverse();
+        row += '<tr class="jr-history"><td colspan="5"><ul class="adm-list">' + (entries.length ? entries.map(function (e) {
+          return '<li><div class="grow"><time>' + esc(ruDateTime(e.at)) + '</time>' + (e.points > 0 ? '+' : '') + Journal.formatPoints(e.points) +
+            ' <span class="opt">· ' + (e.by === 'self' ? 'внёс сам' : 'преподаватель') + '</span></div>' +
+            '<button class="del" type="button" data-act="del-entry" data-pid="' + id + '" data-eid="' + esc(e.id) + '">Удалить</button></li>';
+        }).join('') : '<li class="empty">Записей пока нет.</li>') + '</ul>' +
+          '<div class="jr-tools"><button class="del" type="button" data-act="rename" data-pid="' + id + '">Переименовать</button>' +
+          '<button class="del" type="button" data-act="code" data-pid="' + id + '">Новый код</button>' +
+          '<button class="del" type="button" data-act="remove" data-pid="' + id + '">Удалить участника</button></div></td></tr>';
+      }
+      return row;
+    }).join('');
+  }
+
+  // Собирает введённые числа: [{id, name, points}]. Ошибку показывает у первого неверного поля.
+  function pendingPoints(rows) {
+    return rows.map(function (tr) {
+      var input = tr.querySelector('.jr-add-one input');
+      if (!input.value.trim()) return null;
+      try { return { id: tr.dataset.id, input: input, points: Journal.parsePoints(input.value) }; }
+      catch (err) { input.focus(); throw new Error(tr.querySelector('th').textContent + ': ' + err.message); }
+    }).filter(Boolean);
+  }
+  function savePoints(items) {
+    if (!items.length) { status('err', 'Впишите баллы хотя бы одному участнику.'); return; }
+    status('busy', 'Сохраняю…');
+    $('jr-save-all').disabled = true;
+    var label = function (it) {
+      var p = jr.participants.find(function (x) { return x.id === it.id; });
+      return (p ? p.name : '') + ' ' + it.points.map(function (n) { return (n > 0 ? '+' : '') + Journal.formatPoints(n); }).join(' ');
+    };
+    updateJournal(function (data) {
+      items.forEach(function (it) { Journal.addEntries(findP(data, it.id), it.points, 'admin'); });
+    }, items.length === 1 ? label(items[0]) : 'баллы, участников: ' + items.length).then(function () {
+      items.forEach(function (it) {
+        var input = $('jr-rows').querySelector('tr[data-id="' + CSS.escape(it.id) + '"] .jr-add-one input');
+        if (input) input.value = '';
+      });
+      status('ok', 'Сохранено: ' + items.map(label).join('; ') + '. На сайте журнал обновится через 1–5 минут.');
+    }).catch(function (err) { status('err', err.message); })
+      .then(function () { $('jr-save-all').disabled = false; });
+  }
+
+  $('jr-rows').addEventListener('submit', function (e) {
+    e.preventDefault();
+    try { savePoints(pendingPoints([e.target.closest('tr')])); } catch (err) { status('err', err.message); }
+  });
+  $('jr-save-all').addEventListener('click', function () {
+    try { savePoints(pendingPoints(Array.from($('jr-rows').querySelectorAll('tr[data-id]')))); } catch (err) { status('err', err.message); }
+  });
+
+  function showCodes(pairs) {
+    $('jr-codes-list').innerHTML = pairs.map(function (x) { return '<li><span>' + esc(x.name) + '</span> — <code>' + esc(x.code) + '</code></li>'; }).join('');
+    $('jr-codes').hidden = false;
+    $('jr-codes').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  $('jr-codes-copy').addEventListener('click', function () {
+    var text = Array.from($('jr-codes-list').children).map(function (li) { return li.textContent; }).join('\n');
+    navigator.clipboard.writeText(text).then(function () { status('ok', 'Список кодов скопирован.'); },
+      function () { status('err', 'Не удалось скопировать. Выделите список и скопируйте вручную.'); });
+  });
+
+  function issueCodes(names) {
+    return Promise.all(names.map(function (name) {
+      var code = Journal.generateCode();
+      return Journal.hashCode(code).then(function (hash) { return { name: name, code: code, hash: hash }; });
+    }));
+  }
+
+  $('jr-add-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target;
+    var names = $('jr-names').value.split(/\n/).map(function (s) { return s.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
+    if (!names.length) return;
+    var long = names.find(function (n) { return n.length > 80; });
+    if (long) { status('err', 'Слишком длинная строка: «' + long.slice(0, 40) + '…». Одна фамилия на строку.'); return; }
+    var taken = names.filter(function (n) { return jr.participants.some(function (p) { return p.name.toLowerCase() === n.toLowerCase(); }); });
+    if (taken.length && !confirm('Уже есть в журнале: ' + taken.join(', ') + '. Всё равно добавить ещё раз?')) return;
+    busy(form, true); status('busy', 'Добавляю участников…');
+    issueCodes(names).then(function (issued) {
+      return updateJournal(function (data) {
+        issued.forEach(function (x) { data.participants.push({ id: Journal.newId(), name: x.name, code: x.hash, entries: [] }); });
+      }, 'добавлены участники (' + issued.length + ')').then(function () { return issued; });
+    }).then(function (issued) {
+      form.reset();
+      showCodes(issued);
+      status('ok', 'Добавлено участников: ' + issued.length + '. Сохраните коды — они показываются один раз.');
+    }).catch(function (err) { status('err', err.message); })
+      .then(function () { busy(form, false); });
+  });
+
+  $('jr-rows').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    var act = btn.dataset.act, pid = btn.dataset.pid;
+    if (act === 'history') { var id = btn.closest('tr').dataset.id; jrOpen[id] = !jrOpen[id]; renderJournal(); return; }
+    var p = jr.participants.find(function (x) { return x.id === pid; });
+    if (!p) return;
+    var done;
+    if (act === 'del-entry') {
+      if (!confirm('Удалить эту запись у участника «' + p.name + '»?')) return;
+      done = updateJournal(function (data) {
+        var q = findP(data, pid);
+        q.entries = q.entries.filter(function (x) { return x.id !== btn.dataset.eid; });
+      }, p.name + ': удалена запись').then(function () { return 'Запись удалена.'; });
+    } else if (act === 'rename') {
+      var name = (prompt('Новая фамилия:', p.name) || '').replace(/\s+/g, ' ').trim();
+      if (!name || name === p.name) return;
+      if (name.length > 80) { status('err', 'Слишком длинное имя.'); return; }
+      done = updateJournal(function (data) { findP(data, pid).name = name; }, p.name + ' → ' + name)
+        .then(function () { return 'Переименовано.'; });
+    } else if (act === 'code') {
+      if (!confirm('Выдать участнику «' + p.name + '» новый код? Старый перестанет работать.')) return;
+      done = issueCodes([p.name]).then(function (issued) {
+        return updateJournal(function (data) { findP(data, pid).code = issued[0].hash; }, p.name + ': новый код')
+          .then(function () { showCodes(issued); return 'Новый код выдан. Он показан ниже.'; });
+      });
+    } else if (act === 'remove') {
+      if (!confirm('Удалить участника «' + p.name + '» вместе со всеми баллами?')) return;
+      done = updateJournal(function (data) {
+        data.participants = data.participants.filter(function (x) { return x.id !== pid; });
+      }, 'удалён участник ' + p.name).then(function () { return 'Участник удалён.'; });
+    }
+    if (!done) return;
+    btn.disabled = true; status('busy', 'Сохраняю…');
+    done.then(function (msg) { status('ok', msg); }).catch(function (err) { status('err', err.message); btn.disabled = false; });
   });
 
   // ---------- старт ----------
