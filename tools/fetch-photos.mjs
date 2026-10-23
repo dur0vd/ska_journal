@@ -33,16 +33,14 @@ async function info(params, width) {
 }
 
 const PLACES = {
-  square: ['Red Square Moscow panorama', 'Red Square Moscow evening'],
-  basil: ["Saint Basil's Cathedral Moscow"],
-  spasskaya: ['Spasskaya Tower Moscow Kremlin'],
-  kremlin: ['Moscow Kremlin view from Bolshoy Kamenny Bridge'],
-  ivan: ['Ivan the Great Bell Tower Cathedral Square Kremlin'],
-  msu: ['Main building of Moscow State University'],
-  museum: ['State Historical Museum Moscow'],
-  gum: ['GUM Moscow Red Square'],
-  hall: ['Faceted Chamber Moscow Kremlin interior', 'Moscow State University assembly hall interior', 'Russian State Library reading room'],
-  church: ['Cathedral of the Dormition Moscow Kremlin interior', 'Saint Basil Cathedral interior'],
+  // Снаружи (первый набор уже выбран, см. candidates-1.json)
+  // Внутри: куда «входит» посетитель на страницах разделов
+  inbasil: ["Saint Basil's Cathedral interior", 'Intercession Cathedral Moscow interior iconostasis'],
+  inkremlin: ['Palace of the Facets interior', 'Terem Palace interior Moscow Kremlin', 'Grand Kremlin Palace Saint George Hall'],
+  inmsu: ['Moscow State University main building interior', 'Moscow State University assembly hall'],
+  inmuseum: ['State Historical Museum Moscow interior hall', 'State Historical Museum ceiling'],
+  ingum: ['GUM interior Moscow', 'GUM department store interior glass roof'],
+  inlibrary: ['Russian State Library reading room', 'Pashkov House interior'],
 };
 
 async function candidates() {
