@@ -33,14 +33,28 @@ async function info(params, width) {
 }
 
 const PLACES = {
-  // Ночные виды для тёмной темы (дневные и интерьеры уже выбраны в choice.json)
-  'square-night': ['Red Square Moscow at night', 'Red Square night illumination'],
-  'spasskaya-night': ['Spasskaya Tower at night'],
-  'basil-night': ["Saint Basil's Cathedral at night"],
-  'ivan-night': ['Ivan the Great Bell Tower night', 'Moscow Kremlin cathedrals night'],
-  'msu-night': ['Moscow State University main building night'],
-  'museum-night': ['State Historical Museum Moscow night'],
-  'gum-night': ['GUM Moscow night illumination', 'GUM Red Square evening lights'],
+  // Здания в их настоящем окружении
+  nerl: ['Church of the Intercession on the Nerl', 'Church of the Intercession on the Nerl summer meadow'],
+  'nerl-night': ['Church of the Intercession on the Nerl night', 'Church of the Intercession on the Nerl winter evening'],
+  kyivsophia: ['Saint Sophia Cathedral Kyiv', 'Saint Sophia Cathedral Kiev bell tower'],
+  'kyivsophia-night': ['Saint Sophia Cathedral Kyiv night'],
+  novsophia: ['Saint Sophia Cathedral Veliky Novgorod', 'Novgorod Detinets Saint Sophia Cathedral'],
+  'novsophia-night': ['Novgorod Kremlin night', 'Saint Sophia Cathedral Novgorod evening'],
+  peterhof: ['Peterhof Grand Palace Grand Cascade', 'Grand Cascade Peterhof Samson fountain'],
+  'peterhof-night': ['Peterhof Grand Cascade night illumination', 'Peterhof evening fountains'],
+  tithes: ['Church of the Tithes reconstruction', 'Desiatynna Church model', 'Church of the Tithes Kyiv'],
+  // Внутри
+  'in-kyivsophia': ['Saint Sophia Cathedral Kyiv interior mosaic', 'Oranta mosaic Saint Sophia Kyiv'],
+  'in-novsophia': ['Saint Sophia Cathedral Novgorod interior', 'Saint Sophia Cathedral Veliky Novgorod iconostasis'],
+  'in-peterhof': ['Peterhof Grand Palace interior hall', 'Peterhof Grand Palace Throne Hall'],
+  'in-nerl': ['Church of the Intercession on the Nerl interior'],
+  // Исторические личности (портреты, общественное достояние)
+  'p-ivan': ['Ivan the Terrible Vasnetsov painting', 'Tsar Ivan the Terrible Viktor Vasnetsov 1897'],
+  'p-alexander2': ['Alexander II of Russia portrait full length', 'Emperor Alexander II portrait uniform'],
+  'p-yaroslav': ['Yaroslav the Wise portrait', 'Yaroslav the Wise Tsarsky titulyarnik'],
+  'p-vladimir': ['Vladimir the Great portrait painting', 'Saint Vladimir Vasnetsov'],
+  'p-andrey': ['Andrey Bogolyubsky portrait', 'Andrey Bogolyubsky Tsarsky titulyarnik'],
+  'p-nevsky': ['Alexander Nevsky portrait painting', 'Alexander Nevsky Tsarsky titulyarnik'],
 };
 
 async function candidates() {
@@ -50,11 +64,11 @@ async function candidates() {
     let n = 0;
     for (const query of queries) {
       for (const extra of [' incategory:"Quality_images"', '']) {
-        if (n >= 5) break;
-        const found = (await info({ generator: 'search', gsrsearch: query + extra + ' filetype:bitmap', gsrnamespace: '6', gsrlimit: '12' }, 1280))
+        if (n >= 4) break;
+        const found = (await info({ generator: 'search', gsrsearch: query + extra + ' filetype:bitmap', gsrnamespace: '6', gsrlimit: '12' }, 1024))
           .sort((a, b) => a.index - b.index)
-          .filter((x) => FREE.test(x.license) && x.width >= 1600 && x.width > x.height * 1.2 && !list.some((y) => y.title === x.title));
-        for (const x of found.slice(0, 5 - n)) {
+          .filter((x) => FREE.test(x.license) && (key.startsWith('p-') || key === 'tithes' ? x.width >= 600 : x.width >= 1600 && x.width > x.height * 1.2) && !list.some((y) => y.title === x.title));
+        for (const x of found.slice(0, 4 - n)) {
           const file = `candidates/${key}-${++n}.jpg`;
           fs.writeFileSync(path.join(OUT, file), await get(x.thumb, true));
           list.push({ key, file, ...x });
