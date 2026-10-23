@@ -50,10 +50,10 @@
   },
   {
     "key": "kremlin",
-    "title": "File:Moscow Kremlin and Bolshoy Kamenny Bridge late evening 01.JPG",
-    "artist": "Andrey Korzun",
-    "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Moscow_Kremlin_and_Bolshoy_Kamenny_Bridge_late_evening_01.JPG"
+    "title": "File:Moscow - 2026 - A summer view of the Kremlin from the Bolshoy Kamenny Bridge.jpg",
+    "artist": "Юрий Д.К.",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Moscow_-_2026_-_A_summer_view_of_the_Kremlin_from_the_Bolshoy_Kamenny_Bridge.jpg"
   },
   {
     "key": "inbasil",
@@ -96,5 +96,61 @@
     "artist": "Artyom Svetlov",
     "license": "CC BY-SA 4.0",
     "page": "https://commons.wikimedia.org/wiki/File:Pashkov_House_2024-01_1705109351.tif"
+  },
+  {
+    "key": "kremlin-night",
+    "title": "File:Moscow Kremlin and Bolshoy Kamenny Bridge late evening 01.JPG",
+    "artist": "Andrey Korzun",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Moscow_Kremlin_and_Bolshoy_Kamenny_Bridge_late_evening_01.JPG"
+  },
+  {
+    "key": "square-night",
+    "title": "File:Saint Basils Cathedral and Spasskaya Tower at night - Moscow, Russia - panoramio.jpg",
+    "artist": "Sergey Ashmarin",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Saint_Basils_Cathedral_and_Spasskaya_Tower_at_night_-_Moscow,_Russia_-_panoramio.jpg"
+  },
+  {
+    "key": "spasskaya-night",
+    "title": "File:Russia-2007-Moscow-Kremlin Senate at night.jpg",
+    "artist": "Godot13",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Russia-2007-Moscow-Kremlin_Senate_at_night.jpg"
+  },
+  {
+    "key": "basil-night",
+    "title": "File:Saint Basil Cathedral summer night closeup.jpg",
+    "artist": "Asguskov",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Saint_Basil_Cathedral_summer_night_closeup.jpg"
+  },
+  {
+    "key": "ivan-night",
+    "title": "File:Moscow - Kremlin Embankment on a winter night.jpg",
+    "artist": "Юрий Д.К.",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Moscow_-_Kremlin_Embankment_on_a_winter_night.jpg"
+  },
+  {
+    "key": "msu-night",
+    "title": "File:Moscow State University building (25441261341).jpg",
+    "artist": "Raita Futo from Tokyo, Japan",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Moscow_State_University_building_(25441261341).jpg"
+  },
+  {
+    "key": "museum-night",
+    "title": "File:Museo Estatal de Historia, Moscú, Rusia, 2016-10-03, DD 44-45 HDR.jpg",
+    "artist": "Diego Delso",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Museo_Estatal_de_Historia,_Mosc%C3%BA,_Rusia,_2016-10-03,_DD_44-45_HDR.jpg"
+  },
+  {
+    "key": "gum-night",
+    "title": "File:Catedral de Nuestra Señora de Kazan, Moscú, Rusia, 2016-10-03, DD 01-02 HDR.jpg",
+    "artist": "Diego Delso",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Catedral_de_Nuestra_Se%C3%B1ora_de_Kazan,_Mosc%C3%BA,_Rusia,_2016-10-03,_DD_01-02_HDR.jpg"
   }
 ]
