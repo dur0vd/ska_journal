@@ -69,7 +69,9 @@ async function final() {
   for (const [key, title] of Object.entries(choice)) {
     const [x] = await info({ titles: title }, 2200);
     if (!x || !FREE.test(x.license)) throw new Error('Нет свободной лицензии: ' + title);
-    fs.writeFileSync(path.join(OUT, key + '.jpg'), await get(x.thumb, true));
+    // уже скачанные (и сжатые) снимки и вырезанные фигуры не перекачиваем — меняются только подписи
+    const have = [key + '.jpg', 'fig/' + key + '.webp'].some((f) => fs.existsSync(path.join(OUT, f)));
+    if (!have) fs.writeFileSync(path.join(OUT, key + '.jpg'), await get(x.thumb, true));
     credits.push({ key, title: x.title, artist: x.artist, license: x.license, page: x.page });
     await sleep(300);
   }

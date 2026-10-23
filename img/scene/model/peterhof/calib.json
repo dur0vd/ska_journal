@@ -1,0 +1,20 @@
+{
+ "eye": [
+  -83.106,
+  1.5306,
+  88.0479
+ ],
+ "target": [
+  -50.1508,
+  9.1328,
+  51.2219
+ ],
+ "fov": 36.8504,
+ "aspect": 1.5,
+ "iou": 0.9342,
+ "buildingDepth": 0.1373,
+ "skyTop": "#dce0e8",
+ "skyHorizon": "#bbc2cf",
+ "mask": true,
+ "clean": true
+}

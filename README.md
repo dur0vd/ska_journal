@@ -68,7 +68,17 @@ npm test        # проверки HTML, вложений и локальног�
 | Карты глубины | `img/scene/depth/`, `img/scene/fig/depth/` — `python3 tools/depth-maps.py img/scene img/scene/depth` |
 | Фигуры | `img/scene/fig/*.webp` |
 | Сцена и камера | `assets/scene/src/main.js` (собирается в `assets/scene/world3d.js`) |
+| 3D-модели зданий | каркасы `assets/scene/src/models/*.js`, наклейка снимка `assets/scene/src/modelScene.js`, данные `img/scene/model/<ключ>/` |
 | Разделы и снимки | `SECTION_SCENE`, `HOME_SCENES` в `tools/build.mjs` |
+
+**Как собрана 3D-модель здания** (Покровский собор, Петергоф, Нерль, София Новгородская):
+1. Каркас из блоков, барабанов, глав и шатров (`models/<ключ>.js`, детали — `models/kit.js`) по размерам, снятым со снимка.
+2. Маски «здание/небо/люди»: `python3 tools/seg.py img/scene маски <ключ>`.
+3. Камера фотографа — подбор по совпадению контуров: `node tools/export-model.mjs <ключ> m.json`, затем
+   `python3 tools/calibrate.py m.json маска.png calib.json [x0,x1] [старт]` → `img/scene/model/<ключ>/calib.json`.
+4. Окружение без здания и людей: `python3 tools/environment.py снимок.jpg глубина.jpg маска.png img/scene/model/<ключ> [x0,x1] [линия земли]`.
+5. В браузере снимок проецируется на каркас с точки фотографа; невидимые стороны — зеркально с видимых,
+   части каркаса, которые на снимке приходятся на небо, срезаются (`mask.png`). Модель подключается в `models/index.js`.
 
 **Вернуть старый дизайн:** `SITE_DESIGN=classic npm run build` — прежнее оформление (содержание страниц — текущее).
 Для сайта на GitHub: Settings → Secrets and variables → Actions → Variables → `SITE_DESIGN` = `classic`.

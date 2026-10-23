@@ -40,7 +40,9 @@ const sceneLayers = (keys, figure) => '<div class="scenes" aria-hidden="true">' 
   const night = exists(`img/scene/${k}-night.jpg`);
   const depth = (n) => exists(`img/scene/depth/${n}.jpg`) ? `img/scene/depth/${n}.jpg` : '';
   const fig = figure && i === all.length - 1 && exists(`img/scene/fig/${figure}.webp`) ? ` data-figure="img/scene/fig/${figure}.webp" data-figure-depth="img/scene/fig/depth/${figure}.jpg"` : '';
-  return `<div class="scene" data-depth="${depth(k)}"${night ? ` data-depth-night="${depth(k + '-night')}"` : ''}${fig}><picture>${night ? `<source media="(prefers-color-scheme: dark)" srcset="img/scene/${k}-night.jpg">` : ''}<img src="img/scene/${k}.jpg" alt=""${i ? ' loading="lazy"' : ''} decoding="async"></picture></div>`;
+  // есть каркас с подобранной камерой (img/scene/model/<ключ>) — здание строится как 3D-модель
+  const model = exists(`img/scene/model/${k}/calib.json`) ? ` data-model="${k}"` : '';
+  return `<div class="scene"${model} data-depth="${depth(k)}"${night ? ` data-depth-night="${depth(k + '-night')}"` : ''}${fig}><picture>${night ? `<source media="(prefers-color-scheme: dark)" srcset="img/scene/${k}-night.jpg">` : ''}<img src="img/scene/${k}.jpg" alt=""${i ? ' loading="lazy"' : ''} decoding="async"></picture></div>`;
 }).join('') + '</div>';
 const pages = JSON.parse(fs.readFileSync(ROOT + '/data/pages.json', 'utf8'));
 const assets = JSON.parse(fs.readFileSync(ROOT + '/data/assetmap.json', 'utf8'));

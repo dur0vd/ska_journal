@@ -3,7 +3,11 @@
 // смещаются друг относительно друга, а пролёт «внутрь» здания — это движение камеры в глубину снимка.
 // На главной прокрутка летит от здания к зданию; на страницах раздела камера подлетает и входит внутрь,
 // где стоит историческая личность (вырезанный из портрета объёмный силуэт).
+// Здания, для которых собран каркас (models/), — настоящие 3D-модели: снимок наклеен на каркас
+// с точки фотографа, вокруг — та же местность; камера облетает их и подлетает к ним.
 import * as THREE from 'three';
+import { modelScene } from './modelScene.js';
+import { MODELS } from './models/index.js';
 
 const root = document.documentElement;
 const body = document.body;
@@ -32,7 +36,7 @@ const layers = [...document.querySelectorAll('.scene')].map((el) => {
   const img = el.querySelector('img'), src = el.querySelector('source');
   return {
     day: img.getAttribute('src'), night: src ? src.getAttribute('srcset') : null,
-    dayDepth: el.dataset.depth, nightDepth: el.dataset.depthNight,
+    dayDepth: el.dataset.depth, nightDepth: el.dataset.depthNight, model: MODELS[el.dataset.model] ? el.dataset.model : null,
     figure: el.dataset.figure ? { src: el.dataset.figure, depth: el.dataset.figureDepth } : null,
   };
 });
@@ -101,13 +105,26 @@ async function start() {
   document.querySelector('.scenes').appendChild(canvas);
 
   const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 500);
+  // Слой с прозрачностью (наплыв следующей сцены) рисуется в текстуру и накладывается поверх
+  const rt = new THREE.WebGLRenderTarget(1, 1, { samples: 4 });
+  const blitMat = new THREE.MeshBasicMaterial({ map: rt.texture, transparent: true, depthTest: false, depthWrite: false });
+  const blit = new THREE.Scene(); blit.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), blitMat));
+  const blitCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   // Сцена каждого снимка строится по запросу и хранится; ночь и день — отдельные сцены.
+  // Модель здания одна на день и ночь: ночью темнеет окружение и включается подсветка.
   const cache = new Map();
   async function scene(i) {
     const l = layers[i]; if (!l) return null;
-    const p = pick(l), key = p.color;
+    const p = pick(l), key = l.model ? 'model:' + l.model : p.color;
     if (cache.has(key)) return cache.get(key);
     const job = (async () => {
+      if (l.model) {
+        try {
+          const m = await modelScene(renderer, l.model, MODELS[l.model], `img/scene/${l.model}.jpg`, { small });
+          if (renderer.compileAsync) await renderer.compileAsync(m.scene, camera);
+          return { model: m, night: null };
+        } catch (e) { console.warn('модель', l.model, e); cache.delete(key); l.model = null; return scene(i); }
+      }
       const [c, d] = await Promise.all([loadImage(p.color), loadImage(p.depth)]);
       const s = new THREE.Scene();
       const r = relief(c, d, COLS);
@@ -127,6 +144,7 @@ async function start() {
 
   function resize() {
     renderer.setSize(innerWidth, innerHeight, false);
+    const sz = renderer.getDrawingBufferSize(new THREE.Vector2()); rt.setSize(sz.x, sz.y);
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
   }
@@ -137,7 +155,17 @@ async function start() {
   const sway = { x: 0, y: 0, tx: 0, ty: 0 };
   addEventListener('pointermove', (e) => { sway.tx = (e.clientX / innerWidth) * 2 - 1; sway.ty = (e.clientY / innerHeight) * 2 - 1; }, { passive: true });
   addEventListener('deviceorientation', (e) => { if (e.gamma != null) { sway.tx = clamp(e.gamma / 25, -1, 1); sway.ty = clamp((e.beta - 45) / 25, -1, 1); } }, { passive: true });
+  // Камера у модели: начинает с точки фотографа, при прокрутке облетает здание и подлетает к нему
+  function frameModel(m, fwd) {
+    camera.near = 0.5; camera.far = 6000; camera.aspect = innerWidth / innerHeight;
+    m.fit(camera);
+    const t = clamp(fwd, -0.4, 1.6), r = m.range;
+    const daz = clamp(r * (sway.x * 0.3 + (t - 0.25) * 1.1), -r, r);
+    const k = 1 - Math.max(0, t) * 0.42 + Math.max(0, -t) * 0.9;
+    m.place(camera, daz, Math.max(0.35, k), -sway.y * 0.025 + Math.max(0, t) * 0.05);
+  }
   function frameFor(s, fwd) {
+    camera.near = 0.1; camera.far = 500;
     // кадр как у фотоаппарата: снимок заполняет экран без полей при любом соотношении сторон
     const screen = camera.aspect, photo = s.aspect;
     const ty = screen > photo ? s.tx / screen : s.ty;
@@ -162,6 +190,15 @@ async function start() {
     for (const L of list) {
       const s = await L.s;
       if (!s || L.alpha <= 0) continue;
+      if (s.model) {
+        const night = isNight();
+        if (s.night !== night) { s.model.setNight(night); s.night = night; }
+        frameModel(s.model, L.fwd);
+        if (L.alpha >= 0.999) { renderer.clearDepth(); renderer.render(s.model.scene, camera); continue; }
+        renderer.setRenderTarget(rt); renderer.clear(); renderer.render(s.model.scene, camera); renderer.setRenderTarget(null);
+        blitMat.opacity = L.alpha; renderer.render(blit, blitCam);
+        continue;
+      }
       s.mat.opacity = L.alpha;
       if (s.figure) s.figure.material.opacity = L.alpha;
       frameFor(s, L.fwd);
