@@ -1,122 +1,10 @@
 [
   {
-    "key": "square",
-    "title": "File:Moscow - 2025 - General view of Red Square on a warm autumn day2.jpg",
-    "artist": "Юрий Д.К.",
-    "license": "CC BY 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Moscow_-_2025_-_General_view_of_Red_Square_on_a_warm_autumn_day2.jpg"
-  },
-  {
-    "key": "spasskaya",
-    "title": "File:Moscow 2026-07-17 008.jpg",
-    "artist": "Perituss",
-    "license": "CC0",
-    "page": "https://commons.wikimedia.org/wiki/File:Moscow_2026-07-17_008.jpg"
-  },
-  {
-    "key": "ivan",
-    "title": "File:Ivan the Great Bell Tower, with Assumption Belfry on the left (19964249975).jpg",
-    "artist": "Jorge Láscar from Melbourne, Australia",
-    "license": "CC BY 2.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Ivan_the_Great_Bell_Tower,_with_Assumption_Belfry_on_the_left_(19964249975).jpg"
-  },
-  {
     "key": "basil",
     "title": "File:Moscow - 2025 - St. Basil's Cathedral (3).jpg",
     "artist": "Юрий Д.К.",
     "license": "CC BY 4.0",
     "page": "https://commons.wikimedia.org/wiki/File:Moscow_-_2025_-_St._Basil%27s_Cathedral_(3).jpg"
-  },
-  {
-    "key": "msu",
-    "title": "File:Moscow. Main building of Moscow State University P4131808 2600.jpg",
-    "artist": "Alexxx1979",
-    "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Moscow._Main_building_of_Moscow_State_University_P4131808_2600.jpg"
-  },
-  {
-    "key": "museum",
-    "title": "File:State Historical Museum, 2024-8.jpg",
-    "artist": "Юрий Д.К.",
-    "license": "CC BY 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:State_Historical_Museum,_2024-8.jpg"
-  },
-  {
-    "key": "gum",
-    "title": "File:Moscow - 2025 - Details of the GUM and linden trees2.jpg",
-    "artist": "Юрий Д.К.",
-    "license": "CC BY 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Moscow_-_2025_-_Details_of_the_GUM_and_linden_trees2.jpg"
-  },
-  {
-    "key": "kremlin",
-    "title": "File:Moscow - 2026 - A summer view of the Kremlin from the Bolshoy Kamenny Bridge.jpg",
-    "artist": "Юрий Д.К.",
-    "license": "CC BY 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Moscow_-_2026_-_A_summer_view_of_the_Kremlin_from_the_Bolshoy_Kamenny_Bridge.jpg"
-  },
-  {
-    "key": "inbasil",
-    "title": "File:Saint Basil's Cathedral interior by shakko 08.jpg",
-    "artist": "shakko",
-    "license": "CC BY-SA 3.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Saint_Basil%27s_Cathedral_interior_by_shakko_08.jpg"
-  },
-  {
-    "key": "inpalata",
-    "title": "File:Saint Basil's Cathedral interior by shakko 05.jpg",
-    "artist": "shakko",
-    "license": "CC BY-SA 3.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Saint_Basil%27s_Cathedral_interior_by_shakko_05.jpg"
-  },
-  {
-    "key": "inmsu",
-    "title": "File:Interiors of Main building of Moscow State University 2025-02 1739117144.tif",
-    "artist": "Artyom Svetlov",
-    "license": "CC BY 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Interiors_of_Main_building_of_Moscow_State_University_2025-02_1739117144.tif"
-  },
-  {
-    "key": "inmuseum",
-    "title": "File:Russian princes family tree (GIM ceiling) 04 by shakko.JPG",
-    "artist": "Shakko",
-    "license": "CC BY-SA 3.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Russian_princes_family_tree_(GIM_ceiling)_04_by_shakko.JPG"
-  },
-  {
-    "key": "ingum",
-    "title": "File:Moscow GUM indoor gallery.JPG",
-    "artist": "Vcarceler",
-    "license": "CC BY-SA 3.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Moscow_GUM_indoor_gallery.JPG"
-  },
-  {
-    "key": "inlibrary",
-    "title": "File:Pashkov House 2024-01 1705109351.tif",
-    "artist": "Artyom Svetlov",
-    "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Pashkov_House_2024-01_1705109351.tif"
-  },
-  {
-    "key": "kremlin-night",
-    "title": "File:Moscow Kremlin and Bolshoy Kamenny Bridge late evening 01.JPG",
-    "artist": "Andrey Korzun",
-    "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Moscow_Kremlin_and_Bolshoy_Kamenny_Bridge_late_evening_01.JPG"
-  },
-  {
-    "key": "square-night",
-    "title": "File:Saint Basils Cathedral and Spasskaya Tower at night - Moscow, Russia - panoramio.jpg",
-    "artist": "Sergey Ashmarin",
-    "license": "CC BY-SA 3.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Saint_Basils_Cathedral_and_Spasskaya_Tower_at_night_-_Moscow,_Russia_-_panoramio.jpg"
-  },
-  {
-    "key": "spasskaya-night",
-    "title": "File:Russia-2007-Moscow-Kremlin Senate at night.jpg",
-    "artist": "Godot13",
-    "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Russia-2007-Moscow-Kremlin_Senate_at_night.jpg"
   },
   {
     "key": "basil-night",
@@ -126,31 +14,171 @@
     "page": "https://commons.wikimedia.org/wiki/File:Saint_Basil_Cathedral_summer_night_closeup.jpg"
   },
   {
-    "key": "ivan-night",
-    "title": "File:Moscow - Kremlin Embankment on a winter night.jpg",
+    "key": "inbasil",
+    "title": "File:Saint Basil's Cathedral interior by shakko 08.jpg",
+    "artist": "shakko",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Saint_Basil%27s_Cathedral_interior_by_shakko_08.jpg"
+  },
+  {
+    "key": "square",
+    "title": "File:Moscow - 2025 - General view of Red Square on a warm autumn day2.jpg",
     "artist": "Юрий Д.К.",
     "license": "CC BY 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Moscow_-_Kremlin_Embankment_on_a_winter_night.jpg"
+    "page": "https://commons.wikimedia.org/wiki/File:Moscow_-_2025_-_General_view_of_Red_Square_on_a_warm_autumn_day2.jpg"
   },
   {
-    "key": "msu-night",
-    "title": "File:Moscow State University building (25441261341).jpg",
-    "artist": "Raita Futo from Tokyo, Japan",
+    "key": "square-night",
+    "title": "File:Saint Basils Cathedral and Spasskaya Tower at night - Moscow, Russia - panoramio.jpg",
+    "artist": "Sergey Ashmarin",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Saint_Basils_Cathedral_and_Spasskaya_Tower_at_night_-_Moscow,_Russia_-_panoramio.jpg"
+  },
+  {
+    "key": "kremlin",
+    "title": "File:Moscow - 2026 - A summer view of the Kremlin from the Bolshoy Kamenny Bridge.jpg",
+    "artist": "Юрий Д.К.",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Moscow_-_2026_-_A_summer_view_of_the_Kremlin_from_the_Bolshoy_Kamenny_Bridge.jpg"
+  },
+  {
+    "key": "kremlin-night",
+    "title": "File:Moscow Kremlin and Bolshoy Kamenny Bridge late evening 01.JPG",
+    "artist": "Andrey Korzun",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Moscow_Kremlin_and_Bolshoy_Kamenny_Bridge_late_evening_01.JPG"
+  },
+  {
+    "key": "nerl",
+    "title": "File:Речная церковь.jpg",
+    "artist": "E.3",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:%D0%A0%D0%B5%D1%87%D0%BD%D0%B0%D1%8F_%D1%86%D0%B5%D1%80%D0%BA%D0%BE%D0%B2%D1%8C.jpg"
+  },
+  {
+    "key": "nerl-night",
+    "title": "File:Храм Покрова на Нерли. Зимний вечер.jpg",
+    "artist": "Александра Михалева",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:%D0%A5%D1%80%D0%B0%D0%BC_%D0%9F%D0%BE%D0%BA%D1%80%D0%BE%D0%B2%D0%B0_%D0%BD%D0%B0_%D0%9D%D0%B5%D1%80%D0%BB%D0%B8._%D0%97%D0%B8%D0%BC%D0%BD%D0%B8%D0%B9_%D0%B2%D0%B5%D1%87%D0%B5%D1%80.jpg"
+  },
+  {
+    "key": "kyivsophia",
+    "title": "File:80-391-0151 Kyiv St.Sophia's Cathedral RB 18 2.jpg",
+    "artist": "Rbrechko",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:80-391-0151_Kyiv_St.Sophia%27s_Cathedral_RB_18_2.jpg"
+  },
+  {
+    "key": "kyivsophia-night",
+    "title": "File:St.Sophia Cathedral, Kyiv, Ukraine.jpg",
+    "artist": "Ivan Sedlovskyi",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:St.Sophia_Cathedral,_Kyiv,_Ukraine.jpg"
+  },
+  {
+    "key": "novsophia",
+    "title": "File:Veliky Novgorod. Cathedral of Saint Sophia P7211125 2350.jpg",
+    "artist": "Alexxx1979",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Veliky_Novgorod._Cathedral_of_Saint_Sophia_P7211125_2350.jpg"
+  },
+  {
+    "key": "peterhof",
+    "title": "File:Peterhof 2013 12.jpg",
+    "artist": "Perituss",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Peterhof_2013_12.jpg"
+  },
+  {
+    "key": "tithes",
+    "title": "File:Church of the Tithes – Memorable Sign.jpg",
+    "artist": "Oleh Kushch",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Church_of_the_Tithes_%E2%80%93_Memorable_Sign.jpg"
+  },
+  {
+    "key": "in-kyivsophia",
+    "title": "File:Kyiv-Saint Sophia Cathedral-interior-11.jpg",
+    "artist": "Galvm",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Kyiv-Saint_Sophia_Cathedral-interior-11.jpg"
+  },
+  {
+    "key": "in-tithes",
+    "title": "File:Interior, St. Sophia's Cathedral, Kiev (42667912594).jpg",
+    "artist": "Andrew Milligan sumo",
     "license": "CC BY 2.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Moscow_State_University_building_(25441261341).jpg"
+    "page": "https://commons.wikimedia.org/wiki/File:Interior,_St._Sophia%27s_Cathedral,_Kiev_(42667912594).jpg"
   },
   {
-    "key": "museum-night",
-    "title": "File:Museo Estatal de Historia, Moscú, Rusia, 2016-10-03, DD 44-45 HDR.jpg",
-    "artist": "Diego Delso",
-    "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Museo_Estatal_de_Historia,_Mosc%C3%BA,_Rusia,_2016-10-03,_DD_44-45_HDR.jpg"
+    "key": "in-novsophia",
+    "title": "File:So So 1.JPG",
+    "artist": "Дар Ветер",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:So_So_1.JPG"
   },
   {
-    "key": "gum-night",
-    "title": "File:Catedral de Nuestra Señora de Kazan, Moscú, Rusia, 2016-10-03, DD 01-02 HDR.jpg",
-    "artist": "Diego Delso",
+    "key": "in-peterhof",
+    "title": "File:8697. Grand Peterhof Palace. Throne Hall.jpg",
+    "artist": "GAlexandrova",
     "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Catedral_de_Nuestra_Se%C3%B1ora_de_Kazan,_Mosc%C3%BA,_Rusia,_2016-10-03,_DD_01-02_HDR.jpg"
+    "page": "https://commons.wikimedia.org/wiki/File:8697._Grand_Peterhof_Palace._Throne_Hall.jpg"
+  },
+  {
+    "key": "in-nerl",
+    "title": "File:Church of the Intercession on the Nerl (Церковь Покрова на Нерли), Bogolubovo, Russia - 50408251333.jpg",
+    "artist": "Anton Skrobotov",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Church_of_the_Intercession_on_the_Nerl_(%D0%A6%D0%B5%D1%80%D0%BA%D0%BE%D0%B2%D1%8C_%D0%9F%D0%BE%D0%BA%D1%80%D0%BE%D0%B2%D0%B0_%D0%BD%D0%B0_%D0%9D%D0%B5%D1%80%D0%BB%D0%B8),_Bogolubovo,_Russia_-_50408251333.jpg"
+  },
+  {
+    "key": "p-ivan",
+    "title": "File:Vasnetsov Ioann 4.jpg",
+    "artist": "Viktor Vasnetsov",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Vasnetsov_Ioann_4.jpg"
+  },
+  {
+    "key": "p-alexander2",
+    "title": "File:Alexander II by E.Botman (1866, Hermitage).jpg",
+    "artist": "Georg von Bothmann",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Alexander_II_by_E.Botman_(1866,_Hermitage).jpg"
+  },
+  {
+    "key": "p-yaroslav",
+    "title": "File:Yaroslav the Wise.jpg",
+    "artist": "",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Yaroslav_the_Wise.jpg"
+  },
+  {
+    "key": "p-nevsky",
+    "title": "File:Alexander Nevsky by Borovikovsky.jpg",
+    "artist": "Vladimir Borovikovsky",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Alexander_Nevsky_by_Borovikovsky.jpg"
+  },
+  {
+    "key": "p-andrey",
+    "title": "File:Prince Andrei I Bogolyubsky, fresco.jpg",
+    "artist": "костромитин Иоаким Агеев сын Елепенков, а прозвище Любимо, да нижегородец Иван Лазарев сын Муравей, да ярославец Стефан Евфимиев сын Дьяконов, да москвичи Иван Никитин, Борис Алексеев, Андрей Мартемианов, Никифор Оульянов, Федор да Борис Тимофеевы, да ярославцы Севастьян Дмитриев, Михайло Сидоров, Данило да Федор Оульяновы, да костромичи Илья Данилов, Василей да Прокопий да Дмитрей Ильины дети Запокровские, Иван да Иван же Ивановы дети Поповы, да Матфей Дементьев сын Бородин и прочих с ними трудившихся о Господе",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Prince_Andrei_I_Bogolyubsky,_fresco.jpg"
+  },
+  {
+    "key": "p-vladimir",
+    "title": "File:Moscow. Monument to Vladimir the Great P4121753 2600.jpg",
+    "artist": "Alexxx1979",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Moscow._Monument_to_Vladimir_the_Great_P4121753_2600.jpg"
+  },
+  {
+    "key": "peterhof-night",
+    "title": "File:The Grand Palace in Peterhof, the Church in a winter evening.JPG",
+    "artist": "Professor Caretaker",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:The_Grand_Palace_in_Peterhof,_the_Church_in_a_winter_evening.JPG"
   }
 ]
