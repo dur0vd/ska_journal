@@ -33,28 +33,10 @@ async function info(params, width) {
 }
 
 const PLACES = {
-  // Здания в их настоящем окружении
-  nerl: ['Church of the Intercession on the Nerl', 'Church of the Intercession on the Nerl summer meadow'],
-  'nerl-night': ['Church of the Intercession on the Nerl night', 'Church of the Intercession on the Nerl winter evening'],
-  kyivsophia: ['Saint Sophia Cathedral Kyiv', 'Saint Sophia Cathedral Kiev bell tower'],
-  'kyivsophia-night': ['Saint Sophia Cathedral Kyiv night'],
-  novsophia: ['Saint Sophia Cathedral Veliky Novgorod', 'Novgorod Detinets Saint Sophia Cathedral'],
-  'novsophia-night': ['Novgorod Kremlin night', 'Saint Sophia Cathedral Novgorod evening'],
-  peterhof: ['Peterhof Grand Palace Grand Cascade', 'Grand Cascade Peterhof Samson fountain'],
-  'peterhof-night': ['Peterhof Grand Cascade night illumination', 'Peterhof evening fountains'],
-  tithes: ['Church of the Tithes reconstruction', 'Desiatynna Church model', 'Church of the Tithes Kyiv'],
-  // Внутри
-  'in-kyivsophia': ['Saint Sophia Cathedral Kyiv interior mosaic', 'Oranta mosaic Saint Sophia Kyiv'],
-  'in-novsophia': ['Saint Sophia Cathedral Novgorod interior', 'Saint Sophia Cathedral Veliky Novgorod iconostasis'],
-  'in-peterhof': ['Peterhof Grand Palace interior hall', 'Peterhof Grand Palace Throne Hall'],
-  'in-nerl': ['Church of the Intercession on the Nerl interior'],
-  // Исторические личности (портреты, общественное достояние)
-  'p-ivan': ['Ivan the Terrible Vasnetsov painting', 'Tsar Ivan the Terrible Viktor Vasnetsov 1897'],
-  'p-alexander2': ['Alexander II of Russia portrait full length', 'Emperor Alexander II portrait uniform'],
-  'p-yaroslav': ['Yaroslav the Wise portrait', 'Yaroslav the Wise Tsarsky titulyarnik'],
-  'p-vladimir': ['Vladimir the Great portrait painting', 'Saint Vladimir Vasnetsov'],
-  'p-andrey': ['Andrey Bogolyubsky portrait', 'Andrey Bogolyubsky Tsarsky titulyarnik'],
-  'p-nevsky': ['Alexander Nevsky portrait painting', 'Alexander Nevsky Tsarsky titulyarnik'],
+  'p-vladimir': ['Vladimir I of Kiev', 'Vladimir Sviatoslavich Tsarsky titulyarnik', 'Saint Vladimir Equal-to-the-Apostles painting'],
+  'p-andrey': ['Andrei Bogolyubsky', 'Andrei Bogoliubsky Tsarsky titulyarnik'],
+  'peterhof-night': ['Peterhof Grand Palace night', 'Peterhof fountains illuminated'],
+  'novsophia-night': ['Veliky Novgorod Kremlin night', 'Detinets Veliky Novgorod night'],
 };
 
 async function candidates() {
