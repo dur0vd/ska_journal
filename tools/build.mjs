@@ -280,8 +280,7 @@ ${sc ? (slug === 'index' ? '<body data-scene="home">' : `<body data-scene="page"
   <div class="top-in">
     <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">И</span><span class="brand-t"><strong>${SITE}</strong><small>Сайт ${AUTHOR_GEN}</small></span></a>
     <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Меню"><span></span><span></span><span></span></button>
-    ${navHtml(slug)}
-    ${sc ? '<button class="theme-toggle" type="button" aria-label="Дневная или ночная Москва" title="День / ночь"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sun" d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-5.66 1.41-1.41M4.93 19.07l1.41-1.41m0-11.32L4.93 4.93m14.14 14.14-1.41-1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z"/><path class="moon" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></button>' : ''}
+    ${navHtml(slug)}${sc ? '\n    <button class="theme-toggle" type="button" aria-label="Дневная или ночная Москва" title="День / ночь"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sun" d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-5.66 1.41-1.41M4.93 19.07l1.41-1.41m0-11.32L4.93 4.93m14.14 14.14-1.41-1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z"/><path class="moon" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></button>' : ''}
   </div>
 </header>
 <main id="main">
