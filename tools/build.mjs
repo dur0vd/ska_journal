@@ -30,8 +30,12 @@ const SECTION_SCENE = {
   'Курсовые работы': ['ivan', 'inlibrary'],
 };
 const HOME_SCENES = ['square', 'spasskaya', 'ivan', 'basil', 'msu', 'museum', 'gum', 'kremlin'];
-const sceneLayers = (keys) => '<div class="scenes" aria-hidden="true">' + keys.filter((k) => exists(`img/scene/${k}.jpg`))
-  .map((k, i) => `<div class="scene"><img src="img/scene/${k}.jpg" alt=""${i ? ' loading="lazy"' : ''} decoding="async"></div>`).join('') + '</div>';
+// Снимок слоя: дневной и, если есть, ночной (для тёмной темы) с картами глубины для объёма.
+const sceneLayers = (keys) => '<div class="scenes" aria-hidden="true">' + keys.filter((k) => exists(`img/scene/${k}.jpg`)).map((k, i) => {
+  const night = exists(`img/scene/${k}-night.jpg`);
+  const depth = (n) => exists(`img/scene/depth/${n}.jpg`) ? `img/scene/depth/${n}.jpg` : '';
+  return `<div class="scene" data-depth="${depth(k)}"${night ? ` data-depth-night="${depth(k + '-night')}"` : ''}><picture>${night ? `<source media="(prefers-color-scheme: dark)" srcset="img/scene/${k}-night.jpg">` : ''}<img src="img/scene/${k}.jpg" alt=""${i ? ' loading="lazy"' : ''} decoding="async"></picture></div>`;
+}).join('') + '</div>';
 const pages = JSON.parse(fs.readFileSync(ROOT + '/data/pages.json', 'utf8'));
 const assets = JSON.parse(fs.readFileSync(ROOT + '/data/assetmap.json', 'utf8'));
 const WIX = 'https://solovyevka.wixsite.com/ska-ruhistory';
@@ -277,6 +281,7 @@ ${sc ? (slug === 'index' ? '<body data-scene="home">' : `<body data-scene="page"
     <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">И</span><span class="brand-t"><strong>${SITE}</strong><small>Сайт ${AUTHOR_GEN}</small></span></a>
     <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Меню"><span></span><span></span><span></span></button>
     ${navHtml(slug)}
+    ${sc ? '<button class="theme-toggle" type="button" aria-label="Дневная или ночная Москва" title="День / ночь"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sun" d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-5.66 1.41-1.41M4.93 19.07l1.41-1.41m0-11.32L4.93 4.93m14.14 14.14-1.41-1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z"/><path class="moon" d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></button>' : ''}
   </div>
 </header>
 <main id="main">
