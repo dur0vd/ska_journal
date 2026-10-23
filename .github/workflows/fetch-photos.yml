@@ -7,6 +7,7 @@ on:
     paths:
       - tools/fetch-photos.mjs
       - img/scene/choice.json
+      - img/scene/request-candidates
   workflow_dispatch:
 
 permissions:
@@ -20,9 +21,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node tools/fetch-photos.mjs ${{ hashFiles('img/scene/choice.json') != '' && 'final' || 'candidates' }}
+      # Файл img/scene/request-candidates — скачать варианты для выбора; иначе — выбранные снимки.
+      - run: |
+          if [ -f img/scene/request-candidates ]; then node tools/fetch-photos.mjs candidates && git rm -q img/scene/request-candidates; else node tools/fetch-photos.mjs final; fi
       - name: Сжать снимки для сайта
-        run: mogrify -resize '1920x1920>' -quality 80 -interlace Plane -strip img/scene/*.jpg
+        run: [ -n "$(ls img/scene/*.jpg 2>/dev/null)" ] && mogrify -resize '1920x1920>' -quality 80 -interlace Plane -strip img/scene/*.jpg || true
       - name: Сохранить в ветку
         run: |
           git config user.name "github-actions[bot]"
